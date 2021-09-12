@@ -1,6 +1,6 @@
 node_modules/**
 views/**
-package.json
-package-lock.json
-.gitignore
-index.js
+/package.json
+/package-lock.json
+/.gitignore
+/index.js
