@@ -1,5 +1,5 @@
-import add from "./second.js"
+import {Renderer} from "./Renderer/main.js"
 
 export {
-	add
+	Renderer
 }

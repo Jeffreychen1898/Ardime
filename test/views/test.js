@@ -1,4 +1,10 @@
 import * as Ardime from "/ardime/index.js"
 
-console.log("Hello World");
-console.log(Ardime.add(5, 3));
+window.onload = () => {
+	const settings = {
+		canvas: "canvas",
+		width: 800,
+		height: 600
+	};
+	const Renderer = Ardime.createRenderer(settings);
+}
