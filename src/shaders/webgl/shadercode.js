@@ -1,0 +1,1 @@
+const shaders = {"rect":{"vertex":"vertex shader\ncode\n","fragment":"fragment shader\ncode\n"}}; export shaders;

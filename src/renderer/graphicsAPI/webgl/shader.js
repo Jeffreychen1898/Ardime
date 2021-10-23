@@ -1,4 +1,4 @@
-import * as Constants from "../../../Constants/Constants.js"
+import * as WebGL from "../../../utils/constants.js";
 
 class Shader {
     constructor(gl, vertexCode, fragmentCode, attributes, uniforms) {
@@ -45,7 +45,7 @@ class Shader {
             this.bind();
 
             const uniform = this.m_uniformLocations.get(name);
-            const uniform_types = Constants.WebGL.UniformTypes;
+            const uniform_types = WebGL.WebGL.UniformTypes;
 
             switch(uniform.type) {
                 case uniform_types.Integer:

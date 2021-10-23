@@ -1,5 +1,5 @@
-import {Renderer} from "./Renderer/main.js"
+import {Renderer} from "./renderer/main.js";
 
 export {
 	Renderer
-}
+};

@@ -1,4 +1,5 @@
-import * as WebGL from "./GraphicsAPI/WebGL/webGL.js"
+import * as WebGL from "./graphicsAPI/webgl/webgl.js";
+import * as WebGLShader from "./../shaders/webgl/shadercode.js";
 
 class Renderer {
     /* @param {JSONObject} */

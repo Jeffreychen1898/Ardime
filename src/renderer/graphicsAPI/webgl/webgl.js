@@ -1,5 +1,5 @@
-import * as Shader from "./Shader.js"
-import * as Constants from "./../../../Constants/Constants.js"
+import * as Shader from "./shader.js";
+import * as Constants from "../../../utils/constants.js";
 
 const vertexCode = `
     precision mediump float;
@@ -82,5 +82,6 @@ class WebGL {
 }
 
 export {
-    WebGL
+    WebGL,
+    Shader
 }
