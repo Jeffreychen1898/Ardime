@@ -1,7 +1,16 @@
+import * as WebGL from "./GraphicsAPI/WebGL/webGL.js"
+
 class Renderer {
     /* @param {JSONObject} */
     constructor(settings) {
         this.settings = processRendererSettings(settings);
+
+        const canvas = document.getElementById(settings.canvas);
+
+        this.m_webgl = new WebGL.WebGL();
+        if(!this.m_webgl.setup(canvas)) {
+            //
+        }
     }
 }
 
