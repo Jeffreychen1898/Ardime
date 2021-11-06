@@ -1,9 +1,10 @@
-import * as WebGL from "../../../utils/constants.js";
+import * as WebGL from "./../../../utils/constants.js";
+import * as Constants from "./../../../utils/constants.js";
 
 class Shader {
-    constructor(gl, vertexCode, fragmentCode, attributes, uniforms) {
-        this.m_gl = gl;
+    constructor(vertexCode, fragmentCode, attributes, uniforms) {
 
+        this.m_indexBuffer = null;
         this.m_vertexArray = null;
         this.m_attributeLocations = new Map();
         this.m_uniformLocations = new Map();
@@ -12,19 +13,20 @@ class Shader {
         
         this.$setupAttributes(attributes);
         if(uniforms) this.$setupUniforms(uniforms);
+        this.$setupIndexBuffer();
 
         this.bind();
     }
 
     bind() {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         gl.useProgram(this.m_program);
     }
 
     /* @param { String, Float32Array } */
     setAttributeData(attributeName, data) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         if(this.m_attributeLocations.has(attributeName)) {
             this.bind();
@@ -39,7 +41,7 @@ class Shader {
 
     /* @param { string, Array|number} */
     setUniformData(name, data) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         if(this.m_uniformLocations.has(name)) {
             this.bind();
@@ -73,10 +75,27 @@ class Shader {
         }
     }
 
+    /* @param {Array} */
+    setIndicesData(data) {
+        const gl = Constants.RenderingContext.WebGL;
+
+        this.bind();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBuffer);
+
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.DYNAMIC_DRAW);
+    }
+
     /* @private */
+    $setupIndexBuffer() {
+        const gl = Constants.RenderingContext.WebGL;
+
+        this.m_indexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBUffer);
+    }
+
     /* { name: string, size: number } */
     $setupAttributes(attributes) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         this.m_vertexArray = gl.createVertexArray();
         gl.bindVertexArray(this.m_vertexArray);
@@ -101,7 +120,7 @@ class Shader {
 
     /* @param { name: string, type: WebGLUniformTypes} */
     $setupUniforms(uniforms) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         for(const uniform of uniforms) {
             const location = gl.getUniformLocation(this.m_program, uniform.name)
@@ -110,7 +129,7 @@ class Shader {
     }
 
     $createProgram(vertexCode, fragmentCode) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         const vertex_shader = this.$createShaderProgram(vertexCode, gl.VERTEX_SHADER);
         const fragment_shader = this.$createShaderProgram(fragmentCode, gl.FRAGMENT_SHADER);
@@ -136,7 +155,7 @@ class Shader {
 
     /* @private */
     $createShaderProgram(shaderCode, type) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         const shader = gl.createShader(type);
         gl.shaderSource(shader, shaderCode);
@@ -152,4 +171,4 @@ class Shader {
 
 export {
     Shader
-}
+};

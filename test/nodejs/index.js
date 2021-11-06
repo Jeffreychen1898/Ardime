@@ -49,14 +49,14 @@ function writeShaderJsFile(codes) {
 	const source_codes =
 		"const shaders = "
 		+ JSON.stringify(codes)
-		+ "; export shaders;";
+		+ "; export default shaders;";
 	fs.writeFileSync("src/shaders/webgl/shadercode.js", source_codes);
 }
 
 async function loadShaders(path, callback) {
 	return new Promise((resolve, reject) => {
-		const vertex_path = path + "/vertex.glsl";
-		const fragment_path = path + "/fragment.glsl";
+		const vertex_path = path + "/vertex.vs";
+		const fragment_path = path + "/fragment.fs";
 
 		let vertex_code = "";
 		let fragment_code = "";

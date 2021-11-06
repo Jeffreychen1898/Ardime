@@ -1,5 +1,7 @@
+import * as Constants from "./../utils/constants.js";
+
 import * as WebGL from "./graphicsAPI/webgl/webgl.js";
-import * as WebGLShader from "./../shaders/webgl/shadercode.js";
+import shaders from "./../shaders/webgl/shadercode.js";
 
 class Renderer {
     /* @param {JSONObject} */
@@ -12,6 +14,24 @@ class Renderer {
         if(!this.m_webgl.setup(canvas)) {
             //
         }
+
+        const shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
+            [{name: "vertPosition", size: 2}],
+            [{name: "color", type: Constants.WebGL.UniformTypes.Vector4}]
+        );
+
+        shader.setIndicesData([0, 1, 2]);
+
+        const vertices = [
+            0.0, 0.5,
+            -0.5, -0.5,
+            0.5, -0.5
+        ];
+
+        shader.setAttributeData("vertPosition", new Float32Array(vertices));
+        shader.setUniformData("color", [0.85, 0.8, 0.3, 1]);
+
+        this.m_webgl.renderShape(shader);
     }
 }
 

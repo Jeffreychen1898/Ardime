@@ -10,6 +10,14 @@ const WebGL = {
     }
 };
 
+let RenderingContext = {
+    WebGL: null
+};
+
+let DrawCallCount = 0;
+
 export {
-    WebGL
+    WebGL,
+    RenderingContext,
+    DrawCallCount
 };

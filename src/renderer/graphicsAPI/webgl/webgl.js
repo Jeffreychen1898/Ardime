@@ -1,30 +1,6 @@
 import * as Shader from "./shader.js";
-import * as Constants from "../../../utils/constants.js";
-
-const vertexCode = `
-    precision mediump float;
-    attribute vec2 vertPosition;
-
-    uniform vec4 color;
-    
-    varying vec4 v_color;
-
-    void main()
-    {
-        gl_Position = vec4(vertPosition, 0.0, 1.0);
-        v_color = color;
-    }
-`;
-const fragmentCode = `
-    precision mediump float;
-
-    varying vec4 v_color;
-
-    void main()
-    {
-        gl_FragColor = v_color;
-    }
-`;
+import * as Constants from "./../../../utils/constants.js";
+import shaders from "./../../../shaders/webgl/shadercode.js"
 
 class WebGL {
     constructor() {
@@ -32,8 +8,8 @@ class WebGL {
 
     /* @param { HTMLCanvasElement } */
     setup(canvas) {
-        this.m_gl = canvas.getContext("webgl2");
-        const gl = this.m_gl;
+        const gl = canvas.getContext("webgl2");
+        Constants.RenderingContext.WebGL = gl;
 
         if(!gl) {
             return false;
@@ -42,32 +18,18 @@ class WebGL {
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        const shader = new Shader.Shader(gl, vertexCode, fragmentCode,
-            [{name: "vertPosition", size: 2}],
-            [{name: "color", type: Constants.WebGL.UniformTypes.Vector4}]
-        );
-
-        const vertices = [
-            0.0, 0.5,
-            -0.5, -0.5,
-            0.5, -0.5
-        ];
-
-        shader.setAttributeData("vertPosition", new Float32Array(vertices));
-        shader.setUniformData("color", [0.85, 0.8, 0.3, 1]);
-
-        gl.useProgram(shader.m_program);
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
-
         return true;
     }
 
-    drawShape(vertices) {
-        //
+    renderShape(shader) {
+        const gl = Constants.RenderingContext.WebGL;
+
+        gl.useProgram(shader.m_program);
+        gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
     }
 
     createShaderProgram(shaderCode, type) {
-        const gl = this.m_gl;
+        const gl = Constants.RenderingContext.WebGL;
 
         const shader = gl.createShader(type);
         gl.shaderSource(shader, shaderCode);
@@ -84,4 +46,4 @@ class WebGL {
 export {
     WebGL,
     Shader
-}
+};
