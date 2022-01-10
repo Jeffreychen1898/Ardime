@@ -1,7 +1,4 @@
-node_modules/**
-views/**
-/package.json
-/package-lock.json
-/index.js
-!.gitignore
+test/node_modules/**
+test/package-lock.json
 /shadercode.js
+!.gitignore
