@@ -1,6 +1,5 @@
 import * as Shader from "./shader.js";
 import * as Constants from "./../../../utils/constants.js";
-import shaders from "./../../../shaders/webgl/shadercode.js"
 
 class WebGL {
     constructor() {

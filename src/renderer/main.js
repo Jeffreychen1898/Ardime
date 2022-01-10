@@ -1,7 +1,8 @@
 import * as Constants from "./../utils/constants.js";
 
 import * as WebGL from "./graphicsAPI/webgl/webgl.js";
-import shaders from "./../shaders/webgl/shadercode.js";
+import shaders from "./graphicsAPI/webgl/shadercode.js";
+import { VerticesContainer } from "./verticesContainer.js";
 
 class Renderer {
     /* @param {JSONObject} */

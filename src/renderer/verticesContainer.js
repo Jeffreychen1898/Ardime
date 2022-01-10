@@ -55,6 +55,6 @@ class ContainerNode {
     }
 }
 
-return {
+export {
     VerticesContainer
 };
