@@ -14,10 +14,13 @@ let RenderingContext = {
     WebGL: null
 };
 
+let MaxVertexCount = 10000;
+
 let DrawCallCount = 0;
 
 export {
     WebGL,
     RenderingContext,
-    DrawCallCount
+    DrawCallCount,
+    MaxVertexCount
 };

@@ -20,6 +20,7 @@ class Renderer {
             [{name: "color", type: Constants.WebGL.UniformTypes.Vector4}]
         );
 
+        this.m_indicesData = [];
         shader.setIndicesData([0, 1, 2]);
 
         const vertices = [
@@ -32,6 +33,32 @@ class Renderer {
         shader.setUniformData("color", [0.85, 0.8, 0.3, 1]);
 
         this.m_webgl.renderShape(shader);
+
+        this.m_verticesContainer = new VerticesContainer(Constants.MaxVertexCount);
+    }
+
+    renderShape(vertices) {
+        if(!this.m_verticesContainer.append(vertices)) {
+            //render the object
+            this.makeDrawCall();
+
+            this.m_verticesContainer.append(vertices);
+        }
+    }
+
+    drawRectangles(x, y, w, h) {
+        const vertices = [
+            {index: 0, data: [x, y]},
+            {index: 0, data: [x+w, y]},
+            {index: 0, data: [x+w. y+h]},
+            {index: 0, data: [x, y+h]}
+        ];
+
+        this.renderShape(vertices);
+    }
+
+    makeDrawCall() {
+        shader.setAttributeData("vertPosition", new Float32Array(this.m_verticesContainer.getVertexData(0)));
     }
 }
 
