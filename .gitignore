@@ -4,4 +4,4 @@ views/**
 /package-lock.json
 /index.js
 !.gitignore
-src/renderer/graphicsAPI/webgl/shadercode.js
+/shadercode.js
