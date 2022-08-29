@@ -7,12 +7,15 @@ class WebGL {
 
     /* @param { HTMLCanvasElement } */
     setup(canvas) {
-        const gl = canvas.getContext("webgl2");
+        const gl = canvas.getContext("webgl2", {preserveDrawingBuffer: true});
         Constants.RenderingContext.WebGL = gl;
 
         if(!gl) {
             return false;
         }
+
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -20,11 +23,20 @@ class WebGL {
         return true;
     }
 
-    renderShape(shader) {
+    /* @param {Shader, VerticesContainer} */
+    render(shader, verticesContainer) {
         const gl = Constants.RenderingContext.WebGL;
 
-        gl.useProgram(shader.m_program);
-        gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+        shader.setAllAttributes(verticesContainer.getAllAttributes());
+        shader.setIndicesData(verticesContainer.getIndicesBuffer());
+
+        shader.bind();
+        gl.drawElements(
+            gl.TRIANGLES,
+            verticesContainer.getIndicesBuffer().getCount(),
+            gl.UNSIGNED_SHORT,
+            0
+        );
     }
 
     createShaderProgram(shaderCode, type) {

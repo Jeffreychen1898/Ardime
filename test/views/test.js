@@ -7,13 +7,17 @@ window.onload = () => {
 		height: 600
 	};
 	const renderer = new Ardime.Renderer(settings);
-	//gameloop(renderer);
+	const url = "/testImage.png";
+	const testImage = new Ardime.Image(url, {}, () => {
+		gameloop(renderer, testImage);
+	});
 }
 
-function gameloop(renderer) {
-	renderer.drawRectangle();
+function gameloop(renderer, img) {
+	renderer.draw.image(img, 100, 100, 100, 100);
+	renderer.makeDrawCall();
 
 	requestAnimationFrame(() => {
-		gameloop(renderer);
+		//gameloop(renderer);
 	});
 }

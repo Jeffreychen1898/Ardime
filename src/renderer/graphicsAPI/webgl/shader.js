@@ -18,6 +18,21 @@ class Shader {
         this.bind();
     }
 
+    getAttributesList() {
+        const result = new Array(this.m_attributeLocations.size);
+        let counter = 0;
+        for(const attribute of this.m_attributeLocations.keys()) {
+            result[counter] = {
+                name: attribute,
+                size: this.m_attributeLocations.get(attribute).size
+            };
+
+            ++ counter;
+        }
+
+        return result;
+    }
+
     bind() {
         const gl = Constants.RenderingContext.WebGL;
 
@@ -30,12 +45,19 @@ class Shader {
 
         if(this.m_attributeLocations.has(attributeName)) {
             this.bind();
-            const vbo = this.m_attributeLocations.get(attributeName);
+            const vbo = this.m_attributeLocations.get(attributeName).bufferObject;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
             gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
         } else {
             console.error(`[ERROR] Attribute "${attributeName}" Cannot Be Found!`);
+        }
+    }
+
+    /* @param {VerticesContainer} */
+    setAllAttributes(attributes) {
+        for(const attribute of attributes) {
+            this.setAttributeData(attribute.name, attribute.data);
         }
     }
 
@@ -47,7 +69,7 @@ class Shader {
             this.bind();
 
             const uniform = this.m_uniformLocations.get(name);
-            const uniform_types = WebGL.WebGL.UniformTypes;
+            const uniform_types = WebGL.UniformTypes;
 
             switch(uniform.type) {
                 case uniform_types.Integer:
@@ -105,7 +127,7 @@ class Shader {
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
             const attribute_location = gl.getAttribLocation(this.m_program, attribute.name);
-            this.m_attributeLocations.set(attribute.name, vbo);
+            this.m_attributeLocations.set(attribute.name, {size: attribute.size, bufferObject: vbo});
 
             gl.vertexAttribPointer(attribute_location,
                 attribute.size,

@@ -26,3 +26,18 @@ cd test
 npx webpack build
 ```
 
+## To Do
+
+* rendering images
+* camera manipulation
+* shader abstraction
+
+
+
+* canvas resizes
+
+
+
+## Better Fixes
+
+* Put a lot of the renderer code outside of the class
