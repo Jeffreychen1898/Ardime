@@ -15,8 +15,8 @@ app.listen(PORT, () => {
 	createShaderJsFile(SHADER_READ_PATH, SHADER_WRITE_PATH);
 });
 
-app.use("/", express.static("test/views"));
-app.use("/ardime", express.static("src"));
+app.use("/", express.static("views"));
+app.use("/ardime", express.static("../build"));
 
 function createShaderJsFile(readpath, writepath) {
 	let number_of_shaders = 0;

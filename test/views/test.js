@@ -1,5 +1,3 @@
-import * as Ardime from "/ardime/index.js"
-
 window.onload = () => {
 	const settings = {
 		canvas: "canvas",

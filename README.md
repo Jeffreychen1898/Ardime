@@ -16,7 +16,9 @@ A simple rendering library
 * Run the project
 
   * ```
-    node test/index
+    cd test
+    npx webpack build
+    node index
     ```
 
 **Compress The Library**
