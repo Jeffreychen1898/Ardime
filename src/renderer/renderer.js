@@ -35,14 +35,24 @@ class Renderer {
         // setup the tracker to ensure draw calls are made when resources are changed
         this.m_textureTracker = new Uint8Array(this.maxTextureSlots);
 
+        // setup drawing options
+        this.m_defaultDrawingOptions = undefined;
+        this.$createDefaultDrawingOptions();
+
         // create a list of methods that the user can call
         this.draw = {
-            rect: (x, y, w, h) => { this.drawImage(this.m_whiteImage, x, y, w, h); },
-            image: (image, x, y, w, h) => { this.drawImage(image, x, y, w, h); }
+            rect: (x, y, w, h, options) => { this.drawImage(this.m_whiteImage, x, y, w, h, options); },
+            image: (image, x, y, w, h, options) => { this.drawImage(image, x, y, w, h, options); }
         }
     }
 
-    drawImage(image, x, y, w, h) {
+    setDefaultOption(_options) {
+        this.m_defaultDrawingOptions = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, _options);
+    }
+
+    drawImage(image, x, y, w, h, options) {
+        const obj_option = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, options);
+
         if(this.m_textureTracker[0] != image.id) {
             this.makeDrawCall();
             image.bind(0);
@@ -52,22 +62,22 @@ class Renderer {
         const vertices = [
             {
                 a_position: [x, y],
-                a_color: [1, 1, 1, 1],
+                a_color: obj_option.color,
                 a_texCoord: [0, 1]
             },
             {
                 a_position: [x+w, y],
-                a_color: [1, 1, 1, 1],
+                a_color: obj_option.color,
                 a_texCoord: [1, 1]
             },
             {
                 a_position: [x+w, y+h],
-                a_color: [1, 1, 1, 1],
+                a_color: obj_option.color,
                 a_texCoord: [1, 0]
             },
             {
                 a_position: [x, y+h],
-                a_color: [1, 1, 1, 1],
+                a_color: obj_option.color,
                 a_texCoord: [0, 0]
             }
         ]
@@ -114,6 +124,41 @@ class Renderer {
         const pixel_array = new Uint8Array([255, 255, 255, 255]);
         this.m_whiteImage = new Texture(pixel_array, properties);
         this.m_whiteImage.bind(0);
+    }
+
+    $createDefaultDrawingOptions() {
+        this.m_defaultDrawingOptions = {
+            align: { vertical: "top", horizontal: "left" },
+            color: [ 255, 255, 255, 255 ]
+        };
+    }
+
+    $getFinalDrawingOption(_defaultOption, _overrideOption) {
+        const new_option = _defaultOption;
+        if(_overrideOption == undefined)
+            return new_option;
+
+        for(const each_option in new_option) {
+            // continue if no override is defined
+            if(_overrideOption[each_option] == undefined)
+                continue;
+            
+            // override
+            const option_type = typeof(_overrideOption[each_option]);
+            if(option_type != "object") {
+                new_option[each_option] = _overrideOption[each_option];
+                continue;
+            }
+
+            // objects do not have to have all parts specified
+            for(const option_part in _overrideOption[each_option]) {
+                if(new_option[each_option][option_part] == undefined)
+                    continue;
+                new_option[each_option][option_part] = _overrideOption[each_option][option_part];
+            }
+        }
+
+        return new_option;
     }
 
     $setupCamera(x, y, w, h) {
