@@ -31,7 +31,6 @@ npx webpack build
 ## To Do
 
 * polish and implement rendering options
-* create a performance class for debugging
 * camera manipulation (when uniform object change, make draw call)
 * shader abstraction (when shader is changed, make draw call)
 * Use third party math library for linear algebra
