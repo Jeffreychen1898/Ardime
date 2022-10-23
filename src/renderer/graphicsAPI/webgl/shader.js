@@ -6,7 +6,7 @@ class Shader {
 
         this.m_indexBuffer = null;
         this.m_vertexArray = null;
-        this.m_attributeLocations = new Map();
+        this.m_attributeDetails = new Map();
         this.m_uniformLocations = new Map();
 
         this.m_program = this.$createProgram(vertexCode, fragmentCode);
@@ -19,12 +19,14 @@ class Shader {
     }
 
     getAttributesList() {
-        const result = new Array(this.m_attributeLocations.size);
+        const result = new Array(this.m_attributeDetails.size);
         let counter = 0;
-        for(const attribute of this.m_attributeLocations.keys()) {
+        for(const attribute of this.m_attributeDetails.keys()) {
+            const attribute_details = this.m_attributeDetails.get(attribute);
             result[counter] = {
                 name: attribute,
-                size: this.m_attributeLocations.get(attribute).size
+                size: attribute_details.size,
+                offset: attribute_details.offset
             };
 
             ++ counter;
@@ -41,11 +43,12 @@ class Shader {
 
     /* @param { String, Float32Array } */
     setAttributeData(attributeName, data) {
+        console.log(data);
         const gl = Constants.RenderingContext.WebGL;
 
-        if(this.m_attributeLocations.has(attributeName)) {
+        if(this.m_attributeDetails.has(attributeName)) {
             this.bind();
-            const vbo = this.m_attributeLocations.get(attributeName).bufferObject;
+            const vbo = this.m_attributeDetails.get(attributeName).bufferObject;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
             gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
@@ -56,9 +59,8 @@ class Shader {
 
     /* @param {VerticesContainer} */
     setAllAttributes(attributes) {
-        for(const attribute of attributes) {
-            this.setAttributeData(attribute.name, attribute.data);
-        }
+        for(const attribute of attributes.getAttribList())
+            this.setAttributeData(attribute, attributes);
     }
 
     /* @param { string, Array|number} */
@@ -112,7 +114,7 @@ class Shader {
         const gl = Constants.RenderingContext.WebGL;
 
         this.m_indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBUffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBuffer);
     }
 
     /* { name: string, size: number } */
@@ -122,21 +124,24 @@ class Shader {
         this.m_vertexArray = gl.createVertexArray();
         gl.bindVertexArray(this.m_vertexArray);
 
+        let offset_counter = 0;
         for(const attribute of attributes) {
             const vbo = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
             const attribute_location = gl.getAttribLocation(this.m_program, attribute.name);
-            this.m_attributeLocations.set(attribute.name, {size: attribute.size, bufferObject: vbo});
+            this.m_attributeDetails.set(attribute.name, {size: attribute.size, bufferObject: vbo, offset: offset_counter});
 
             gl.vertexAttribPointer(attribute_location,
                 attribute.size,
                 gl.FLOAT,
                 gl.FALSE,
                 attribute.size * Float32Array.BYTES_PER_ELEMENT,
-                0
+                offset_counter * Float32Array.BYTES_PER_ELEMENT
             );
             gl.enableVertexAttribArray(attribute_location);
+
+            offset_counter += attribute.size;
         }
     }
 

@@ -30,9 +30,12 @@ npx webpack build
 
 ## To Do
 
-* rendering images
+* store all attribute data in the same array
+* polish and implement rendering options
 * camera manipulation
 * shader abstraction
+* Use third party math library for linear algebra
+* better error handling
 
 
 

@@ -26,7 +26,7 @@ class Renderer {
 
         // create the vertices container
         this.m_verticesContainer = new VerticesContainer(Constants.MaxVertexCount, 10000);
-        this.m_verticesContainer.newShader(this.m_shader);
+        this.m_verticesContainer.setShader(this.m_shader);
 
         // create a list of methods that the user can call
         this.draw = {
@@ -65,12 +65,13 @@ class Renderer {
 
     makeDrawCall() {
         this.m_webgl.render(this.m_shader, this.m_verticesContainer);
+        //this.m_verticesContainer.clear();
     }
 
     $renderShape(vertices) {
-        if(!this.m_verticesContainer.add(vertices)) { // flush if full
+        if(!this.m_verticesContainer.appendShape(vertices)) { // flush if full
             this.makeDrawCall();
-            this.m_verticesContainer.add(vertices);
+            this.m_verticesContainer.appendShape(vertices);
         }
     }
 
@@ -78,8 +79,8 @@ class Renderer {
         this.m_shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
             [
                 {name: "a_position", size: 2},
-                {name: "a_color", size: 4},
-                {name: "a_texCoord", size: 2}
+                //{name: "a_color", size: 4},
+                //{name: "a_texCoord", size: 2}
             ],
             [
                 {name: "u_projection", type: Constants.UniformTypes.Matrix4},

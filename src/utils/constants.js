@@ -8,6 +8,7 @@ const UniformTypes = {
     IntegerArray: 6
 };
 const MaxTextureSlot = 8;
+const MaxAttribData = 50000;
 
 let RenderingContext = {
     WebGL: null
