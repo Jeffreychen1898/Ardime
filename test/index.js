@@ -5,8 +5,8 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-const SHADER_READ_PATH = "res/shaders/";
-const SHADER_WRITE_PATH = "src/renderer/graphicsAPI/webgl/shadercode.js";
+const SHADER_READ_PATH = "../res/shaders/";
+const SHADER_WRITE_PATH = "../src/renderer/graphicsAPI/webgl/shadercode.js";
 const shaders = [];
 
 app.listen(PORT, () => {
@@ -18,12 +18,18 @@ app.listen(PORT, () => {
 app.use("/", express.static("views"));
 app.use("/build", express.static("../build"));
 app.use("/ardime", express.static("../src"));
+app.use("/res", express.static("../res"));
 
 function createShaderJsFile(readpath, writepath) {
 	let number_of_shaders = 0;
 	let shaders_loaded = 0;
 	const shader_code = {};
 	//read the list of shaders
+	lineReader.open(readpath + "shaders.txt", (err, reader) => {
+		if(err)
+			console.log(err);
+	});
+
 	lineReader.eachLine(readpath + "shaders.txt", (line) => {
 		if(line.includes("END")) {
 			console.log(`${number_of_shaders} shaders found!`);

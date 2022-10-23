@@ -124,6 +124,10 @@ class Shader {
         this.m_vertexArray = gl.createVertexArray();
         gl.bindVertexArray(this.m_vertexArray);
 
+        let vertex_size = 0;
+        for(const attribute of attributes)
+            vertex_size += attribute.size;
+
         let offset_counter = 0;
         for(const attribute of attributes) {
             const vbo = gl.createBuffer();
@@ -136,7 +140,7 @@ class Shader {
                 attribute.size,
                 gl.FLOAT,
                 gl.FALSE,
-                attribute.size * Float32Array.BYTES_PER_ELEMENT,
+                vertex_size * Float32Array.BYTES_PER_ELEMENT,
                 offset_counter * Float32Array.BYTES_PER_ELEMENT
             );
             gl.enableVertexAttribArray(attribute_location);

@@ -45,17 +45,17 @@ class Renderer {
             },
             {
                 a_position: [x+w, y],
-                a_color: [1, 1, 1, 1],
+                a_color: [1, 1, 0, 1],
                 a_texCoord: [1, 1]
             },
             {
                 a_position: [x+w, y+h],
-                a_color: [1, 1, 1, 1],
+                a_color: [1, 0, 1, 1],
                 a_texCoord: [1, 0]
             },
             {
                 a_position: [x, y+h],
-                a_color: [1, 1, 1, 1],
+                a_color: [0, 1, 1, 1],
                 a_texCoord: [0, 0]
             }
         ]
@@ -65,7 +65,7 @@ class Renderer {
 
     makeDrawCall() {
         this.m_webgl.render(this.m_shader, this.m_verticesContainer);
-        //this.m_verticesContainer.clear();
+        this.m_verticesContainer.clear();
     }
 
     $renderShape(vertices) {
@@ -79,7 +79,7 @@ class Renderer {
         this.m_shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
             [
                 {name: "a_position", size: 2},
-                //{name: "a_color", size: 4},
+                {name: "a_color", size: 4},
                 //{name: "a_texCoord", size: 2}
             ],
             [
