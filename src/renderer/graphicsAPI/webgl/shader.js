@@ -43,7 +43,6 @@ class Shader {
 
     /* @param { String, Float32Array } */
     setAttributeData(attributeName, data) {
-        console.log(data);
         const gl = Constants.RenderingContext.WebGL;
 
         if(this.m_attributeDetails.has(attributeName)) {

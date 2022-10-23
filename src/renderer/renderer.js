@@ -25,7 +25,7 @@ class Renderer {
         this.$createDefaultImage();
 
         // create the vertices container
-        this.m_verticesContainer = new VerticesContainer(Constants.MaxVertexCount, 10000);
+        this.m_verticesContainer = new VerticesContainer(Constants.MAX_ATTRIBUTES, Constants.MAX_INDICES);
         this.m_verticesContainer.setShader(this.m_shader);
 
         // create a list of methods that the user can call
@@ -45,17 +45,17 @@ class Renderer {
             },
             {
                 a_position: [x+w, y],
-                a_color: [1, 1, 0, 1],
+                a_color: [1, 1, 1, 1],
                 a_texCoord: [1, 1]
             },
             {
                 a_position: [x+w, y+h],
-                a_color: [1, 0, 1, 1],
+                a_color: [1, 1, 1, 1],
                 a_texCoord: [1, 0]
             },
             {
                 a_position: [x, y+h],
-                a_color: [0, 1, 1, 1],
+                a_color: [1, 1, 1, 1],
                 a_texCoord: [0, 0]
             }
         ]
@@ -80,7 +80,7 @@ class Renderer {
             [
                 {name: "a_position", size: 2},
                 {name: "a_color", size: 4},
-                //{name: "a_texCoord", size: 2}
+                {name: "a_texCoord", size: 2}
             ],
             [
                 {name: "u_projection", type: Constants.UniformTypes.Matrix4},

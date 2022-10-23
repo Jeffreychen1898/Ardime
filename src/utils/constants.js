@@ -8,13 +8,12 @@ const UniformTypes = {
     IntegerArray: 6
 };
 const MaxTextureSlot = 8;
-const MaxAttribData = 50000;
+const MAX_ATTRIBUTES = 50_000;
+const MAX_INDICES = 10_000;
 
 let RenderingContext = {
     WebGL: null
 };
-
-let MaxVertexCount = 10000;
 
 let DrawCallCount = 0;
 
@@ -22,5 +21,6 @@ export {
     UniformTypes,
     RenderingContext,
     DrawCallCount,
-    MaxVertexCount
+    MAX_ATTRIBUTES,
+    MAX_INDICES
 };

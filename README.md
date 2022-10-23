@@ -30,12 +30,16 @@ npx webpack build
 
 ## To Do
 
-* store all attribute data in the same array
+* make draw call under following conditions: (different image, different shader, container full, uniform object change)
 * polish and implement rendering options
 * camera manipulation
 * shader abstraction
 * Use third party math library for linear algebra
 * better error handling
+* text rendering
+
+* frame buffers
+* uniform buffers
 
 
 
