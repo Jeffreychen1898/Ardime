@@ -6,6 +6,10 @@ class VerticesContainer {
         this.m_attributesArr = new AttributeArray(maxAttributes);
     }
 
+    empty() {
+        return this.m_indexBuffer.getCount() == 0;
+    }
+
     /* @param {Shader} */
     setShader(shader) {
         const attributes = shader.getAttributesList();
@@ -19,7 +23,7 @@ class VerticesContainer {
     /* @param{RenderingAPI} */
     clear() {
         this.m_attributesArr.clear();
-        this.m_indexBuffer = new IndicesArray(this.m_maxIndices);
+        this.m_indexBuffer.clear();
     }
 
     appendShape(_shape) {
@@ -63,6 +67,11 @@ class VerticesContainer {
 class IndicesArray extends Uint16Array {
     constructor(size) {
         super(size);
+        this.m_counter = 0;
+        this.m_totalVertexCount = 0;
+    }
+
+    clear() {
         this.m_counter = 0;
         this.m_totalVertexCount = 0;
     }

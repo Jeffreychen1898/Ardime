@@ -7,7 +7,6 @@ const UniformTypes = {
     Matrix4: 5,
     IntegerArray: 6
 };
-const MaxTextureSlot = 8;
 const MAX_ATTRIBUTES = 50_000;
 const MAX_INDICES = 10_000;
 

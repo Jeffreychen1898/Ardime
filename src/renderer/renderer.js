@@ -28,6 +28,13 @@ class Renderer {
         this.m_verticesContainer = new VerticesContainer(Constants.MAX_ATTRIBUTES, Constants.MAX_INDICES);
         this.m_verticesContainer.setShader(this.m_shader);
 
+        // setup useful variables
+        this.webgl = Constants.RenderingContext.WebGL;
+        this.maxTextureSlots = this.webgl.getParameter(this.webgl.MAX_TEXTURE_IMAGE_UNITS);
+
+        // setup the tracker to ensure draw calls are made when resources are changed
+        this.m_textureTracker = new Uint8Array(this.maxTextureSlots);
+
         // create a list of methods that the user can call
         this.draw = {
             rect: (x, y, w, h) => { this.drawImage(this.m_whiteImage, x, y, w, h); },
@@ -36,7 +43,12 @@ class Renderer {
     }
 
     drawImage(image, x, y, w, h) {
-        image.bind(0);
+        if(this.m_textureTracker[0] != image.id) {
+            this.makeDrawCall();
+            image.bind(0);
+            this.m_textureTracker[0] = image.id;
+        }
+
         const vertices = [
             {
                 a_position: [x, y],
@@ -64,6 +76,9 @@ class Renderer {
     }
 
     makeDrawCall() {
+        if(this.m_verticesContainer.empty())
+            return;
+
         this.m_webgl.render(this.m_shader, this.m_verticesContainer);
         this.m_verticesContainer.clear();
     }

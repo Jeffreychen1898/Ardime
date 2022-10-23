@@ -2,7 +2,7 @@ import * as Constants from "../utils/constants.js";
 import * as Methods from "../utils/methods.js";
 
 /* not finished */
-let counter = 0;
+let counter = 1;
 
 class Texture {
     constructor(source, properties, callback) {

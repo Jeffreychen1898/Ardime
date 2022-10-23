@@ -30,10 +30,10 @@ npx webpack build
 
 ## To Do
 
-* make draw call under following conditions: (different image, different shader, container full, uniform object change)
 * polish and implement rendering options
-* camera manipulation
-* shader abstraction
+* create a performance class for debugging
+* camera manipulation (when uniform object change, make draw call)
+* shader abstraction (when shader is changed, make draw call)
 * Use third party math library for linear algebra
 * better error handling
 * text rendering

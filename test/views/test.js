@@ -16,10 +16,11 @@ window.onload = () => {
 let pos = 50;
 function gameloop(renderer, img) {
 	renderer.draw.image(img, 0, 0, 100, 100);
+	//renderer.draw.rect(-400, -300, 400, 300);
 	//renderer.draw.rect(0, 0, pos += 5, 100);
 	renderer.makeDrawCall();
 
 	requestAnimationFrame(() => {
-		gameloop(renderer, img);
+		//gameloop(renderer, img);
 	});
 }
