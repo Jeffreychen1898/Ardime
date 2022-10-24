@@ -1,4 +1,5 @@
 import * as Constants from "../utils/constants.js";
+import * as Methods from "../utils/methods.js";
 
 import * as WebGL from "./graphicsAPI/webgl/webgl.js";
 import shaders from "./graphicsAPI/webgl/shadercode.js";
@@ -50,13 +51,13 @@ class Renderer {
     /* @param { options{} } */
     /* options { align: string, color: Array } */
     setDefaultOption(_options) {
-        this.m_defaultDrawingOptions = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, _options);
+        this.m_defaultDrawingOptions = Methods.processOptions(this.m_defaultDrawingOptions, _options);
     }
 
     /* @param { Texture, number, number, number, number, options{} } */
     /* options { align: string, color: Array } */
     drawImage(_image, _x, _y, _w, _h, _options) {
-        const obj_option = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, _options);
+        const obj_option = Methods.processOptions(this.m_defaultDrawingOptions, _options);
 
         // swap texture
         if(this.m_textureTracker[0] != _image.id) {
@@ -162,35 +163,6 @@ class Renderer {
         };
     }
 
-    /* @param { JSONObject, JSONObject } */
-    $getFinalDrawingOption(_defaultOption, _overrideOption) {
-        const new_option = _defaultOption;
-        if(_overrideOption == undefined)
-            return new_option;
-
-        for(const each_option in new_option) {
-            // continue if no override is defined
-            if(typeof(_overrideOption[each_option]) != typeof(_defaultOption[each_option]))
-                continue;
-            
-            // override
-            const option_type = typeof(_overrideOption[each_option]);
-            if(option_type != "object") {
-                new_option[each_option] = _overrideOption[each_option];
-                continue;
-            }
-
-            // objects do not have to have all parts specified
-            for(const option_part in _overrideOption[each_option]) {
-                if(new_option[each_option][option_part] == undefined)
-                    continue;
-                new_option[each_option][option_part] = _overrideOption[each_option][option_part];
-            }
-        }
-
-        return new_option;
-    }
-
     /* @param { number, number, number, number } */
     $setupCamera(_x, _y, _w, _h) {
         this.m_defaultCamera.setPosition(_x, _y);
@@ -207,28 +179,19 @@ function processRendererSettings(_settings) {
         return { error: true, message: "[ERROR] Renderer settings must be a JSON Object!" };
     }
 
-    let processed_settings = {};
+    // process the settings
+    const default_setting = {
+        canvas: null,
+        width: 100,
+        height: 100
+    };
+    let processed_settings = Methods.processOptions(default_setting, _settings);
 
-    //canvas
-    if(typeof(_settings.canvas) == "string") {
-        processed_settings.canvas = document.getElementById(_settings.canvas);
-    } else {
+    // grab the canvas
+    if(processed_settings.canvas == null)
         return { error: true, message: "[ERROR] Renderer settings is missing canvas id!" };
-    }
-
-    //width
-    if(typeof(_settings.width) == "number") {
-        processed_settings.width = _settings.width;
-    } else {
-        processed_settings.width = processed_settings.canvas.width || 100;
-    }
-
-    //height
-    if(typeof(_settings.height) == "number") {
-        processed_settings.height = _settings.height;
-    } else {
-        processed_settings.height = processed_settings.canvas.height || 100;
-    }
+    else
+        processed_settings.canvas = document.getElementById(processed_settings.canvas);
 
     return processed_settings;
 }

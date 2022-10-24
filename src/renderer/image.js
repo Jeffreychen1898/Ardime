@@ -1,4 +1,5 @@
 import * as Constants from "../utils/constants.js";
+import * as Methods from "../utils/methods.js";
 
 let counter = 1;
 
@@ -88,15 +89,10 @@ function processProperties(_properties) {
     if(!_properties)
         return null;
     
-    const new_properties = {};
-
-    /* image smoothing */
-    if(typeof _properties.smooth == "boolean")
-        new_properties.smooth = _properties.smooth;
-    else
-        new_properties.smooth = true;
-    
-    return new_properties;
+    const default_options = {
+        smooth: true
+    };
+    return Methods.processOptions(default_options, _properties);
 }
 
 export default Texture;
