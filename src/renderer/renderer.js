@@ -44,7 +44,15 @@ class Renderer {
         // create a list of methods that the user can call
         this.draw = {
             rect: (_x, _y, _w, _h, _options) => { this.drawImage(this.m_whiteImage, _x, _y, _w, _h, _options); },
-            image: (_image, _x, _y, _w, _h, _options) => { this.drawImage(_image, _x, _y, _w, _h, _options); }
+            image: (_image, _x, _y, _w, _h, _options) => { this.drawImage(_image, _x, _y, _w, _h, _options); },
+            shape: {
+                new: () => { this.newShape(); },
+                vertex: (_shape, _attributes, _differentShader) => { this.createVertex(_shape, _attributes, _differentShader); },
+                draw: (_shape) => { this.drawShape(_shape); }
+            },
+            bind: {
+                texture: (_texture, _slot) => { this.bindTexture(_texture, _slot); }
+            }
         }
     }
 
@@ -59,12 +67,7 @@ class Renderer {
     drawImage(_image, _x, _y, _w, _h, _options) {
         const obj_option = Methods.processOptions(this.m_defaultDrawingOptions, _options);
 
-        // swap texture
-        if(this.m_textureTracker[0] != _image.id) {
-            this.makeDrawCall();
-            _image.bind(0);
-            this.m_textureTracker[0] = _image.id;
-        }
+        this.bindTexture(_image, 0);
 
         // calculate position based on alignment
         const get_align = obj_option.align.split(" ");
@@ -86,30 +89,57 @@ class Renderer {
                 break;
         }
 
-        const vertices = [
-            {
-                a_position: [position.x, position.y],
-                a_color: obj_option.color,
-                a_texCoord: [0, 1]
-            },
-            {
-                a_position: [position.x+_w, position.y],
-                a_color: obj_option.color,
-                a_texCoord: [1, 1]
-            },
-            {
-                a_position: [position.x+_w, position.y+_h],
-                a_color: obj_option.color,
-                a_texCoord: [1, 0]
-            },
-            {
-                a_position: [position.x, position.y+_h],
-                a_color: obj_option.color,
-                a_texCoord: [0, 0]
-            }
-        ];
+        const new_shape = this.newShape();
 
-        this.$renderShape(vertices);
+        this.createVertex(new_shape, { position: [position.x, position.y], color: obj_option.color, texCoord: [0, 1]});
+        this.createVertex(new_shape, { position: [position.x+_w, position.y], color: obj_option.color, texCoord: [1, 1]});
+        this.createVertex(new_shape, { position: [position.x+_w, position.y+_h], color: obj_option.color, texCoord: [1, 0]});
+        this.createVertex(new_shape, { position: [position.x, position.y+_h], color: obj_option.color, texCoord: [0, 0]});
+
+        this.drawShape(new_shape);
+    }
+
+    bindTexture(_image, _slot) {
+        if(this.m_textureTracker[_slot] != _image.id) {
+            this.makeDrawCall();
+            _image.bind(_slot);
+            this.m_textureTracker[_slot] = _image.id;
+        }
+    }
+
+    newShape() {
+        return [];
+    }
+
+    /* @param { Array, attributes{}, boolean } */
+    /* attributes { *attribute*: *value* } */
+    /* attributes { position: Array, color: Array, texCoord: Array} */
+    createVertex(_shape, _attributes, _differentShader) {
+        if(_differentShader) {
+            _shape.push(_attributes);
+            return;
+        }
+
+        const default_values = {
+            position: [0, 0],
+            color: [255, 255, 255, 255],
+            texCoord: [0, 0]
+        };
+        const shape_attributes = Methods.processOptions(default_values, _attributes);
+        _shape.push({
+            a_position: shape_attributes.position,
+            a_color: shape_attributes.color,
+            a_texCoord: shape_attributes.texCoord
+        });
+    }
+
+    /* @param { vertices[] } */
+    /* vertices [{ *attribute*: *data* }] */
+    drawShape(_shape) {
+        if(!this.m_verticesContainer.appendShape(_shape)) { // flush if full
+            this.makeDrawCall();
+            this.m_verticesContainer.appendShape(_shape);
+        }
     }
 
     makeDrawCall() {
@@ -118,15 +148,6 @@ class Renderer {
 
         this.m_webgl.render(this.m_shader, this.m_verticesContainer);
         this.m_verticesContainer.clear();
-    }
-
-    /* @param { vertices[] } */
-    /* vertices [{ *attribute*: *data* }] */
-    $renderShape(_vertices) {
-        if(!this.m_verticesContainer.appendShape(_vertices)) { // flush if full
-            this.makeDrawCall();
-            this.m_verticesContainer.appendShape(_vertices);
-        }
     }
 
     /* initialization functions */

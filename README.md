@@ -30,7 +30,6 @@ npx webpack build
 
 ## To Do
 
-* implement draw shapes method
 * Use math.js for linear algebra
 * camera manipulation (when uniform object change, make draw call)
 * shader abstraction (when shader is changed, make draw call)
@@ -39,6 +38,8 @@ npx webpack build
 
 * frame buffers
 * uniform buffers
+* create geometry class for handling geometry
+* use linked list for storing vertices (renderer.js, verticesContainer.js)
 
 
 
