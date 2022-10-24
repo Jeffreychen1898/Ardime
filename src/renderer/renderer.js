@@ -113,7 +113,7 @@ class Renderer {
 
     /* @param { Array, attributes{}, boolean } */
     /* attributes { *attribute*: *value* } */
-    /* attributes { position: Array, color: Array, texCoord: Array} */
+    /* attributes { position: Array[number * 2], color: Array[number * 4], texCoord: Array[number * 2]} */
     createVertex(_shape, _attributes, _differentShader) {
         if(_differentShader) {
             _shape.push(_attributes);
