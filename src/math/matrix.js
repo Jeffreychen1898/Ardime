@@ -1,12 +1,12 @@
 class Matrix {
 	/* @param{number | array, boolean} */
-	constructor(val, transpose) {
-		this.m_size = typeof(val) == "number" ? val : Math.sqrt(val.length);
-		if(typeof(val) == "object") {
+	constructor(_val, _transpose) {
+		this.m_size = typeof(_val) == "number" ? _val : Math.sqrt(_val.length);
+		if(typeof(_val) == "object") {
 			// this class only support square matrices
 			if(this.m_size % 1 == 0) {
-				this.m_matrix = new Float32Array(val);
-				if(!transpose)
+				this.m_matrix = new Float32Array(_val);
+				if(!_transpose)
 					this.transpose();
 				return;
 			}
@@ -19,15 +19,15 @@ class Matrix {
 	}
 
 	/* @param {Matrix | number} */
-	multiply(value) {
-		if(value instanceof Matrix && value.getSize() == this.m_size) {
+	multiply(_value) {
+		if(_value instanceof Matrix && _value.getSize() == this.m_size) {
 			const copy = this.m_matrix.slice(0);
 			for(let i=0;i<this.m_size;++i) {
 				for(let j=0;j<this.m_size;++j) {
 
 					let counter = 0;
 					for(let k=0;k<this.m_size;++k)
-						counter += copy[k * this.m_size + j] * value.getCell(k, i);
+						counter += copy[k * this.m_size + j] * _value.getCell(k, i);
 
 					this.m_matrix[i*4+j] = counter;
 				}
@@ -36,9 +36,9 @@ class Matrix {
 			return;
 		}
 
-		if(typeof(value) == "number") {
+		if(typeof(_value) == "number") {
 			for(let i=0;i<this.m_matrix.length;i++)
-				this.m_matrix[i] *= value;
+				this.m_matrix[i] *= _value;
 
 			return;
 		}
@@ -48,12 +48,12 @@ class Matrix {
 	}
 
 	/* @parma {Mat4} */
-	add(matrix) {
-		if(matrix instanceof Matrix && matrix.getSize() == this.m_size) {
+	add(_matrix) {
+		if(_matrix instanceof Matrix && _matrix.getSize() == this.m_size) {
 			const copy = this.m_matrix.slice(0);
 			for(let i=0;i<this.m_size;++i) {
 				for(let j=0;j<this.m_size;++j)
-					this.m_matrix[i*this.m_size+j] = copy[i*this.m_size+j] + matrix.getCell(j, i);
+					this.m_matrix[i*this.m_size+j] = copy[i*this.m_size+j] + _matrix.getCell(j, i);
 
 			}
 			return;
@@ -64,12 +64,12 @@ class Matrix {
 	}
 
 	/* @param {Mat4} */
-	subtract(matrix) {
-		if(matrix instanceof Matrix && matrix.getSize() == this.m_size) {
+	subtract(_matrix) {
+		if(_matrix instanceof Matrix && _matrix.getSize() == this.m_size) {
 			const copy = this.m_matrix.slice(0);
 			for(let i=0;i<this.m_size;++i) {
 				for(let j=0;j<this.m_size;++j)
-					this.m_matrix[i*this.m_size+j] = copy[i*this.m_size+j] - matrix.getCell(j, i);
+					this.m_matrix[i*this.m_size+j] = copy[i*this.m_size+j] - _matrix.getCell(j, i);
 			}
 			return;
 		}
@@ -103,21 +103,21 @@ class Matrix {
 		return new_matrix;
 	}
 
-	setCell(row, col, val) {
-		if(row < this.m_size && col < this.m_size) {
-			this.m_matrix[col * this.m_size + row] = val;
+	setCell(_row, _col, _val) {
+		if(_row < this.m_size && _col < this.m_size) {
+			this.m_matrix[_col * this.m_size + _row] = _val;
 			return;
 		}
 
-		const exception = `[ERROR] matrix does not have a cell at [${row}, ${col}]`;
+		const exception = `[ERROR] matrix does not have a cell at [${_row}, ${_col}]`;
 		throw new RangeError(exception);
 	}
 
-	getCell(row, col) {
-		if(row < this.m_size && col < this.m_size)
-			return this.m_matrix[col * this.m_size + row];
+	getCell(_row, _col) {
+		if(_row < this.m_size && _col < this.m_size)
+			return this.m_matrix[_col * this.m_size + _row];
 
-		const exception = `[ERROR] matrix does not have a value at [${row}, ${col}]`;
+		const exception = `[ERROR] matrix does not have a value at [${_row}, ${_col}]`;
 		throw new RangeError(exception);
 	}
 

@@ -1,10 +1,9 @@
 import Matrix from "./matrix.js";
-import * as Utils from "./utils.js";
 
 class Mat4 extends Matrix {
-	constructor(matrix) {
-		if(typeof(matrix) == "object") {
-			super(matrix);
+	constructor(_matrix) {
+		if(typeof(_matrix) == "object") {
+			super(_matrix);
 			return;
 		}
 
@@ -12,15 +11,15 @@ class Mat4 extends Matrix {
 	}
 
 	/* @param {Matrix | number} */
-	multiply(value) {
-		if(value instanceof Mat4) {
+	multiply(_value) {
+		if(_value instanceof Mat4) {
 			const copy = this.m_matrix.slice(0);
 			const operation = (r, c) => {
 				const result =
-					copy[0 +r] * value.getCell(0, c) +
-					copy[4 +r] * value.getCell(1, c) +
-					copy[8 +r] * value.getCell(2, c) +
-					copy[12+r] * value.getCell(3, c);
+					copy[0 +r] * _value.getCell(0, c) +
+					copy[4 +r] * _value.getCell(1, c) +
+					copy[8 +r] * _value.getCell(2, c) +
+					copy[12+r] * _value.getCell(3, c);
 
 				return result;
 			}
@@ -33,15 +32,15 @@ class Mat4 extends Matrix {
 			return;
 		}
 
-		if(typeof(value) == "number") {
+		if(typeof(_value) == "number") {
 			for(let i=0;i<this.m_matrix.length;++i)
-				this.m_matrix[i] *= value;
+				this.m_matrix[i] *= _value;
 
 			return;
 		}
 
 		const exception = "[ERROR] Mat4 can only be multiplied by a scalar or another Mat4!";
-		throw new Utils.InvalidOperation(exception);
+		throw new Error(exception);
 	}
 
 	inverse() {
@@ -56,7 +55,7 @@ class Mat4 extends Matrix {
 
 		if(determinent == 0) {
 			const exception = "[ERROR] Matrix cannot be inverted due to a determinent of 0!";
-			throw new Utils.InvalidOperation(exception);
+			throw new Error(exception);
 		}
 
 		this.multiply(1 / determinent);

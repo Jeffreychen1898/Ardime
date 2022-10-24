@@ -7,40 +7,7 @@ import Mat3 from "./mat3.js";
 import Mat4 from "./mat4.js";
 import * as Utils from "./utils.js";
 
-function rotateX(ang) {
-	const raw_matrix = Utils.rotateXRaw(ang);
-	const matrix = new Mat4(raw_matrix);
-
-	return matrix;
-}
-
-function rotateY(ang) {
-	const raw_matrix = Utils.rotateYRaw(ang);
-	const matrix = new Mat4(raw_matrix);
-	
-	return matrix;
-}
-
-function rotateZ(ang) {
-	const raw_matrix = Utils.rotateZRaw(ang);
-	const matrix = new Mat4(raw_matrix);
-
-	return matrix;
-}
-
-function projection2d(l, r, t, b, n, f) {
-	const raw_matrix = Utils.projection2dRaw(l, r, t, b, n, f);
-	const matrix = new Mat4(raw_matrix);
-
-	return matrix;
-}
-
-function projection3d(l, r, t, b, n, f) {
-	const raw_matrix = Utils.projection3dRaw(l, r, t, b, n, f);
-	const matrix = new Mat4(raw_matrix);
-
-	return matrix;
-}
+const getMatrix = Utils.getMatrix;
 
 export {
 	Matrix,
@@ -50,9 +17,5 @@ export {
 	Mat2,
 	Mat3,
 	Mat4,
-	rotateX,
-	rotateY,
-	rotateZ,
-	projection2d,
-	projection3d
+	getMatrix
 };

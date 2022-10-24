@@ -1,74 +1,78 @@
-class InvalidOperation extends Error {
-	constructor(message) {
-		super(message);
-	}
-}
+import Mat4 from "./mat4.js";
 
-function rotateXRaw(ang) {
-	const new_matrix = [
+/* @param { number } */
+function rotateX(_ang) {
+	const rotate_matrix = [
 		1, 0, 0, 0,
-		0, Math.cos(ang), -Math.sin(ang), 0,
-		0, Math.sin(ang), -Math.cos(ang), 0,
+		0, Math.cos(_ang), -Math.sin(_ang), 0,
+		0, Math.sin(_ang), -Math.cos(_ang), 0,
 		0, 0, 0, 1
 	];
 
-	return new_matrix;
+	return new Mat4(rotate_matrix);
 }
 
-function rotateYRaw(ang) {
-	const new_matrix = [
-		Math.cos(ang), 0, Math.sin(ang), 0,
+/* @param { number } */
+function rotateY(_ang) {
+	const rotate_matrix = [
+		Math.cos(_ang), 0, Math.sin(_ang), 0,
 		0, 1, 0, 0,
-		-Math.sin(ang), 0, Math.cos(ang), 0,
+		-Math.sin(_ang), 0, Math.cos(_ang), 0,
 		0, 0, 0, 1
 	];
 
-	return new_matrix;
+	return new Mat4(rotate_matrix);
 }
 
-function rotateZRaw(ang) {
-	const new_matrix = [
-		Math.cos(ang), -Math.sin(ang), 0, 0,
-		Math.sin(ang), Math.cos(ang), 0, 0,
+/* @param { number } */
+function rotateZ(_ang) {
+	const rotate_matrix = [
+		Math.cos(_ang), -Math.sin(_ang), 0, 0,
+		Math.sin(_ang), Math.cos(_ang), 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
 	];
-	for(let i=0;i<new_matrix.length;++i) {
-		new_matrix[i] *= 100000;
-		new_matrix[i] = Math.floor(new_matrix[i]);
-		new_matrix[i] = new_matrix[i] / 100000;
+	for(let i=0;i<rotate_matrix.length;++i) {
+		rotate_matrix[i] *= 100000;
+		rotate_matrix[i] = Math.floor(rotate_matrix[i]);
+		rotate_matrix[i] /= 100000;
 	}
 
-	return new_matrix;
+	return new Mat4(rotate_matrix);
 }
 
-function projection2dRaw(l, r, t, b, n, f) {
+/* @param { number, number, number, number, number, number } */
+function projection2d(_left, _right, _top, _bottom, _near, _far) {
 	const projection = [
-		2/(r-l), 0, 0, -(r+l)/(r-l),
-		0, 2/(t-b), 0, -(t+b)/(t-b),
-		0, 0, -2/(f-n), -(f+n)/(f-n),
+		2/(_right-_left), 0, 0, -(_right+_left)/(_right-_left),
+		0, 2/(_top-_bottom), 0, -(_top+_bottom)/(_top-_bottom),
+		0, 0, -2/(_far-_near), -(_far+_near)/(_far-_near),
 		0, 0, 0, 1
 	];
 
-	return projection;
+	return new Mat4(projection);
 }
 
-function projection3dRaw(l, r, t, b, n, f) {
+/* @param { number, number, number, number, number, number } */
+function projection3d(_left, _right, _top, _bottom, _near, _far) {
 	const projection = [
-		(2*n)/(r-l), 0, (r+l)/(r-l), 0,
-		0, (2*n)/(t-b), (t+b)/(t-b), 0,
-		0, 0, -(f+n)/(f-n), -(2*f*n)/(f-n),
+		(2*_near)/(_right-_left), 0, (_right+_left)/(_right-_left), 0,
+		0, (2*_near)/(_top-_bottom), (_top+_bottom)/(_top-_bottom), 0,
+		0, 0, -(_far+_near)/(_far-_near), -(2*_far*_near)/(_far-_near),
 		0, 0, -1, 0
 	];
 
-	return projection;
+	return new Mat4(projection);
 }
 
+const getMatrix = {
+	rotateX,
+	rotateY,
+	rotateZ,
+	projection2d,
+	projection3d
+};
+
 export {
-	InvalidOperation,
-	rotateXRaw,
-	rotateYRaw,
-	rotateZRaw,
-	projection2dRaw,
-	projection3dRaw
+	getMatrix
 };

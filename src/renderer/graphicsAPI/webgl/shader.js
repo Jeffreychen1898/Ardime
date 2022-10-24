@@ -2,17 +2,20 @@ import * as WebGL from "./../../../utils/constants.js";
 import * as Constants from "./../../../utils/constants.js";
 
 class Shader {
-    constructor(vertexCode, fragmentCode, attributes, uniforms) {
+    /* @param { string, string, attributes[], uniforms[] } */
+    /* attributes [{ name: string, size: number }] */
+    /* uniforms [{ name: string, type: UniformTypes }] */
+    constructor(_vertexCode, _fragmentCode, _attributes, _uniforms) {
 
         this.m_indexBuffer = null;
         this.m_vertexArray = null;
         this.m_attributeDetails = new Map();
         this.m_uniformLocations = new Map();
 
-        this.m_program = this.$createProgram(vertexCode, fragmentCode);
+        this.m_program = createProgram(_vertexCode, _fragmentCode);
         
-        this.$setupAttributes(attributes);
-        if(uniforms) this.$setupUniforms(uniforms);
+        this.$setupAttributes(_attributes);
+        if(_uniforms) this.$setupUniforms(_uniforms);
         this.$setupIndexBuffer();
 
         this.bind();
@@ -42,70 +45,70 @@ class Shader {
     }
 
     /* @param { String, Float32Array } */
-    setAttributeData(attributeName, data) {
+    setAttributeData(_attributeName, _data) {
         const gl = Constants.RenderingContext.WebGL;
 
-        if(this.m_attributeDetails.has(attributeName)) {
+        if(this.m_attributeDetails.has(_attributeName)) {
             this.bind();
-            const vbo = this.m_attributeDetails.get(attributeName).bufferObject;
+            const vbo = this.m_attributeDetails.get(_attributeName).bufferObject;
 
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-            gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, _data, gl.DYNAMIC_DRAW);
         } else {
-            console.error(`[ERROR] Attribute "${attributeName}" Cannot Be Found!`);
+            console.error(`[ERROR] Attribute "${_attributeName}" Cannot Be Found!`);
         }
     }
 
-    /* @param {VerticesContainer} */
-    setAllAttributes(attributes) {
-        for(const attribute of attributes.getAttribList())
-            this.setAttributeData(attribute, attributes);
+    /* @param { VerticesContainer } */
+    setAllAttributes(_attributes) {
+        for(const attribute of _attributes.getAttribList())
+            this.setAttributeData(attribute, _attributes);
     }
 
-    /* @param { string, Array|number} */
-    setUniformData(name, data) {
+    /* @param { string, Array|number } */
+    setUniformData(_name, _data) {
         const gl = Constants.RenderingContext.WebGL;
 
-        if(this.m_uniformLocations.has(name)) {
+        if(this.m_uniformLocations.has(_name)) {
             this.bind();
 
-            const uniform = this.m_uniformLocations.get(name);
+            const uniform = this.m_uniformLocations.get(_name);
             const uniform_types = WebGL.UniformTypes;
 
             switch(uniform.type) {
                 case uniform_types.Integer:
-                    gl.uniform1i(uniform.location, data);
+                    gl.uniform1i(uniform.location, _data);
                     break;
                 case uniform_types.Float:
-                    gl.uniform1f(uniform.location, data);
+                    gl.uniform1f(uniform.location, _data);
                     break;
                 case uniform_types.Vector2:
-                    gl.uniform2f(uniform.location, ...data);
+                    gl.uniform2f(uniform.location, ..._data);
                     break;
                 case uniform_types.Vector3:
-                    gl.uniform3f(uniform.location, ...data);
+                    gl.uniform3f(uniform.location, ..._data);
                     break;
                 case uniform_types.Vector4:
-                    gl.uniform4f(uniform.location, ...data);
+                    gl.uniform4f(uniform.location, ..._data);
                     break;
                 case uniform_types.Matrix4:
-                    gl.uniformMatrix4fv(uniform.location, gl.FALSE, data);
+                    gl.uniformMatrix4fv(uniform.location, gl.FALSE, _data);
                     break;
                 case uniform_types.IntegerArray:
-                    gl.uniform1iv(uniform.location, data);
+                    gl.uniform1iv(uniform.location, _data);
                     break;
             }
         }
     }
 
-    /* @param {Array} */
-    setIndicesData(data) {
+    /* @param { Array } */
+    setIndicesData(_data) {
         const gl = Constants.RenderingContext.WebGL;
 
         this.bind();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBuffer);
 
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.DYNAMIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.m_indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(_data), gl.DYNAMIC_DRAW);
     }
 
     /* @private */
@@ -117,18 +120,18 @@ class Shader {
     }
 
     /* { name: string, size: number } */
-    $setupAttributes(attributes) {
+    $setupAttributes(_attributes) {
         const gl = Constants.RenderingContext.WebGL;
 
         this.m_vertexArray = gl.createVertexArray();
         gl.bindVertexArray(this.m_vertexArray);
 
         let vertex_size = 0;
-        for(const attribute of attributes)
+        for(const attribute of _attributes)
             vertex_size += attribute.size;
 
         let offset_counter = 0;
-        for(const attribute of attributes) {
+        for(const attribute of _attributes) {
             const vbo = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
@@ -148,55 +151,56 @@ class Shader {
         }
     }
 
-    /* @param { name: string, type: WebGLUniformTypes} */
-    $setupUniforms(uniforms) {
+    /* @param { name: string, type: WebGLUniformTypes } */
+    $setupUniforms(_uniforms) {
         const gl = Constants.RenderingContext.WebGL;
 
-        for(const uniform of uniforms) {
+        for(const uniform of _uniforms) {
             const location = gl.getUniformLocation(this.m_program, uniform.name)
             this.m_uniformLocations.set(uniform.name, { location: location, type: uniform.type });
         }
     }
+}
 
-    $createProgram(vertexCode, fragmentCode) {
-        const gl = Constants.RenderingContext.WebGL;
+/* @param { string, string } */
+function createProgram(_vertexCode, _fragmentCode) {
+    const gl = Constants.RenderingContext.WebGL;
 
-        const vertex_shader = this.$createShaderProgram(vertexCode, gl.VERTEX_SHADER);
-        const fragment_shader = this.$createShaderProgram(fragmentCode, gl.FRAGMENT_SHADER);
+    const vertex_shader = createShaderProgram(_vertexCode, gl.VERTEX_SHADER);
+    const fragment_shader = createShaderProgram(_fragmentCode, gl.FRAGMENT_SHADER);
 
-        const program = gl.createProgram();
+    const program = gl.createProgram();
 
-        gl.attachShader(program, vertex_shader);
-        gl.attachShader(program, fragment_shader);
-        gl.linkProgram(program);
+    gl.attachShader(program, vertex_shader);
+    gl.attachShader(program, fragment_shader);
+    gl.linkProgram(program);
 
-        if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-            console.error(`ERROR linking program! ${gl.getProgramInfoLog(program)}`);
-        }
-
-        //expensive :(
-        gl.validateProgram(program);
-        if(!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
-            console.error(`ERROR validating program! ${gl.getProgramInfoLog(program)}`);
-        }
-
-        return program;
+    if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error(`ERROR linking program! ${gl.getProgramInfoLog(program)}`);
     }
 
-    /* @private */
-    $createShaderProgram(shaderCode, type) {
-        const gl = Constants.RenderingContext.WebGL;
-
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, shaderCode);
-
-        gl.compileShader(shader);
-        if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            console.error(`ERROR compiling shader! ${gl.getShaderInfoLog(shader)}`);
-        }
-
-        return shader;
+    //expensive :(
+    gl.validateProgram(program);
+    if(!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
+        console.error(`ERROR validating program! ${gl.getProgramInfoLog(program)}`);
     }
+
+    return program;
+}
+
+/* @param { string, gl_shader_type } */
+function createShaderProgram(_shaderCode, _type) {
+    const gl = Constants.RenderingContext.WebGL;
+
+    const shader = gl.createShader(_type);
+    gl.shaderSource(shader, _shaderCode);
+
+    gl.compileShader(shader);
+    if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(`ERROR compiling shader! ${gl.getShaderInfoLog(shader)}`);
+    }
+
+    return shader;
 }
 
 export {

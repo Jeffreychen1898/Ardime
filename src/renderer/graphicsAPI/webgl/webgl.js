@@ -6,8 +6,8 @@ class WebGL {
     }
 
     /* @param { HTMLCanvasElement } */
-    setup(canvas) {
-        const gl = canvas.getContext("webgl2", {preserveDrawingBuffer: true});
+    setup(_canvas) {
+        const gl = _canvas.getContext("webgl2", {preserveDrawingBuffer: true});
         Constants.RenderingContext.WebGL = gl;
 
         if(!gl) {
@@ -23,34 +23,20 @@ class WebGL {
         return true;
     }
 
-    /* @param {Shader, VerticesContainer} */
-    render(shader, verticesContainer) {
+    /* @param { Shader, VerticesContainer } */
+    render(_shader, _verticesContainer) {
         const gl = Constants.RenderingContext.WebGL;
 
-        shader.setAllAttributes(verticesContainer.getAllAttributes());
-        shader.setIndicesData(verticesContainer.getIndicesBuffer());
+        _shader.setAllAttributes(_verticesContainer.getAllAttributes());
+        _shader.setIndicesData(_verticesContainer.getIndicesBuffer());
 
-        shader.bind();
+        _shader.bind();
         gl.drawElements(
             gl.TRIANGLES,
-            verticesContainer.getIndicesBuffer().getCount(),
+            _verticesContainer.getIndicesBuffer().getCount(),
             gl.UNSIGNED_SHORT,
             0
         );
-    }
-
-    createShaderProgram(shaderCode, type) {
-        const gl = Constants.RenderingContext.WebGL;
-
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, shaderCode);
-
-        gl.compileShader(shader);
-        if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            console.error(`ERROR compiling shader! ${gl.getShaderInfoLog(shader)}`);
-        }
-
-        return shader;
     }
 }
 

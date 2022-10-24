@@ -1,9 +1,9 @@
 class VerticesContainer {
-    /* @param {Integer} */
-    constructor(maxAttributes, maxIndices) {
-        this.m_indexBuffer = new IndicesArray(maxIndices);
+    /* @param { number, number } */
+    constructor(_maxAttributes, _maxIndices) {
+        this.m_indexBuffer = new IndicesArray(_maxIndices);
 
-        this.m_attributesArr = new AttributeArray(maxAttributes);
+        this.m_attributesArr = new AttributeArray(_maxAttributes);
     }
 
     empty() {
@@ -11,8 +11,8 @@ class VerticesContainer {
     }
 
     /* @param {Shader} */
-    setShader(shader) {
-        const attributes = shader.getAttributesList();
+    setShader(_shader) {
+        const attributes = _shader.getAttributesList();
         this.m_attributesArr.clear();
         this.m_attributesArr.resetAttribDetails();
 
@@ -20,12 +20,13 @@ class VerticesContainer {
             this.m_attributesArr.setAttribDetails(attrib.name, attrib.offset, attrib.size);
     }
 
-    /* @param{RenderingAPI} */
     clear() {
         this.m_attributesArr.clear();
         this.m_indexBuffer.clear();
     }
 
+    /* @param { vertices[] } */
+    /* vertices [{ *attribute*: *data* }] */
     appendShape(_shape) {
         // check if the containers have enough space
         if(!this.m_indexBuffer.validateSize(_shape.length))
@@ -65,8 +66,9 @@ class VerticesContainer {
 }
 
 class IndicesArray extends Uint16Array {
-    constructor(size) {
-        super(size);
+    /* @param { number } */
+    constructor(_size) {
+        super(_size);
         this.m_counter = 0;
         this.m_totalVertexCount = 0;
     }
@@ -76,26 +78,28 @@ class IndicesArray extends Uint16Array {
         this.m_totalVertexCount = 0;
     }
 
-    insert(data, vertexCount) {
-        if(this.m_counter + data.length > super.length)
+    /* @param { Uint16Array, number } */
+    insert(_data, _vertexCount) {
+        if(this.m_counter + _data.length > super.length)
             return false;
         
-        const modified_data = [...data];
+        const modified_data = [..._data];
         for(const i in modified_data) {
             modified_data[i] = modified_data[i] + this.m_totalVertexCount;
         }
 
         super.set(modified_data, this.m_counter);
-        this.m_counter += data.length;
+        this.m_counter += _data.length;
 
-        this.m_totalVertexCount += vertexCount;
+        this.m_totalVertexCount += _vertexCount;
 
         return true;
     }
 
-    validateSize(numOfVertices) {
-        const required_size = 3 * numOfVertices - 6;
-        const total_vertex_count = this.m_totalVertexCount + numOfVertices;
+    /* @param { number } */
+    validateSize(_numOfVertices) {
+        const required_size = 3 * _numOfVertices - 6;
+        const total_vertex_count = this.m_totalVertexCount + _numOfVertices;
         
         return this.m_counter + required_size <= super.length && total_vertex_count < 0xFFFF;
     }
@@ -106,8 +110,9 @@ class IndicesArray extends Uint16Array {
 }
 
 class AttributeArray extends Float32Array {
-    constructor(size) {
-        super(size);
+    /* @param { number } */
+    constructor(_size) {
+        super(_size);
         this.m_contentSize = 0;
         this.m_attribDetails = new Map();
         this.m_vertexLength = 0;
@@ -122,12 +127,14 @@ class AttributeArray extends Float32Array {
         this.m_attribDetails.clear();
     }
 
+    /* @param { string, number, number } */
     setAttribDetails(_name, _offset, _size) {
-        // input format: {name: string, offset: number, size: number}
         this.m_attribDetails.set(_name, { offset: _offset, size: _size });
         this.m_vertexLength += _size;
     }
 
+    /* @param { vertexData{} } */
+    /* vertexData { *attribute*: *data* } */
     insert(_vertexData) {
         // validate the vertex data
         for(const key of this.m_attribDetails.keys()) {
@@ -145,10 +152,12 @@ class AttributeArray extends Float32Array {
         return true;
     }
 
+    /* @param { number } */
     validateSize(_vertexCount) {
         return this.m_contentSize + _vertexCount * this.m_vertexLength < super.length;
     }
 
+    /* @param { string } */
     getAttribDetail(_name) {
         return this.m_attribDetails.get(_name);
     }

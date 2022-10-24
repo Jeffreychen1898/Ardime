@@ -7,19 +7,27 @@ const UniformTypes = {
     Matrix4: 5,
     IntegerArray: 6
 };
-const MAX_ATTRIBUTES = 50_000;
-const MAX_INDICES = 10_000;
 
 let RenderingContext = {
     WebGL: null
 };
 
-let DrawCallCount = 0;
+/* variables for performance time output type */
+const Time = {
+    Millisec: 0,
+    Seconds: 1,
+    Minutes: 2,
+    Hours: 3
+};
+
+/* ============ do not export out of lib ============ */
+const MAX_ATTRIBUTES = 50_000;
+const MAX_INDICES = 10_000;
 
 export {
     UniformTypes,
     RenderingContext,
-    DrawCallCount,
     MAX_ATTRIBUTES,
-    MAX_INDICES
+    MAX_INDICES,
+    Time
 };

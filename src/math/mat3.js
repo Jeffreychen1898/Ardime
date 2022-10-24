@@ -1,10 +1,9 @@
 import Matrix from "./matrix.js";
-import * as Utils from "./utils.js";
 
 class Mat3 extends Matrix {
-	constructor(matrix) {
-		if(typeof(matrix) == "object") {
-			super(matrix);
+	constructor(_matrix) {
+		if(typeof(_matrix) == "object") {
+			super(_matrix);
 			return;
 		}
 
@@ -12,14 +11,14 @@ class Mat3 extends Matrix {
 	}
 
 	/* @param {Matrix | number} */
-	multiply(value) {
-		if(value instanceof Mat3) {
+	multiply(_value) {
+		if(_value instanceof Mat3) {
 			const copy = this.m_matrix.slice(0);
 			const operation = (r, c) => {
 				const result =
-					copy[0 +r] * value.getCell(0, c) +
-					copy[3 +r] * value.getCell(1, c) +
-					copy[6 +r] * value.getCell(2, c);
+					copy[0 +r] * _value.getCell(0, c) +
+					copy[3 +r] * _value.getCell(1, c) +
+					copy[6 +r] * _value.getCell(2, c);
 
 				return result;
 			}
@@ -40,7 +39,7 @@ class Mat3 extends Matrix {
 		}
 
 		const exception = "[ERROR] Mat3 can only be multiplied by a scalar or another Mat3!";
-		throw new Utils.InvalidOperation(exception);
+		throw new Error(exception);
 	}
 
 	inverse() {
@@ -54,7 +53,7 @@ class Mat3 extends Matrix {
 
 		if(determinent == 0) {
 			const exception = "[ERROR] Matrix cannot be inverted due to a determinent of 0!";
-			throw new Utils.InvalidOperation(exception);
+			throw new Error(exception);
 		}
 
 		this.multiply(1 / determinent);

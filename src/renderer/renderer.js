@@ -7,13 +7,14 @@ import Camera2d from "./camera2d.js";
 import Texture from "./image.js";
 
 class Renderer {
-    /* @param {JSONObject} */
-    constructor(settings) {
+    /* @param { settings{} } */
+    /* settings { canvas: string, width: number, height: number } */
+    constructor(_settings) {
         this.m_shader = null;
         this.m_defaultCamera = new Camera2d();
         this.m_whiteImage = null;
 
-        this.settings = processRendererSettings(settings);
+        this.settings = processRendererSettings(_settings);
 
         this.m_webgl = new WebGL.WebGL();
         if(!this.m_webgl.setup(this.settings.canvas))
@@ -41,42 +42,46 @@ class Renderer {
 
         // create a list of methods that the user can call
         this.draw = {
-            rect: (x, y, w, h, options) => { this.drawImage(this.m_whiteImage, x, y, w, h, options); },
-            image: (image, x, y, w, h, options) => { this.drawImage(image, x, y, w, h, options); }
+            rect: (_x, _y, _w, _h, _options) => { this.drawImage(this.m_whiteImage, _x, _y, _w, _h, _options); },
+            image: (_image, _x, _y, _w, _h, _options) => { this.drawImage(_image, _x, _y, _w, _h, _options); }
         }
     }
 
+    /* @param { options{} } */
+    /* options { align: string, color: Array } */
     setDefaultOption(_options) {
         this.m_defaultDrawingOptions = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, _options);
     }
 
-    drawImage(image, x, y, w, h, options) {
-        const obj_option = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, options);
+    /* @param { Texture, number, number, number, number, options{} } */
+    /* options { align: string, color: Array } */
+    drawImage(_image, _x, _y, _w, _h, _options) {
+        const obj_option = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, _options);
 
         // swap texture
-        if(this.m_textureTracker[0] != image.id) {
+        if(this.m_textureTracker[0] != _image.id) {
             this.makeDrawCall();
-            image.bind(0);
-            this.m_textureTracker[0] = image.id;
+            _image.bind(0);
+            this.m_textureTracker[0] = _image.id;
         }
 
         // calculate position based on alignment
         const get_align = obj_option.align.split(" ");
-        let position = { x: x, y: y };
+        let position = { x: _x, y: _y };
         switch(get_align[0]) {
             case "center":
-                position.y -= h / 2.0;
+                position.y -= _h / 2.0;
                 break;
             case "bottom":
-                position.y -= h;
+                position.y -= _h;
                 break;
         }
         switch(get_align[1]) {
             case "center":
-                position.x -= w / 2.0;
+                position.x -= _w / 2.0;
                 break;
             case "right":
-                position.x += w;
+                position.x += _w;
                 break;
         }
 
@@ -87,17 +92,17 @@ class Renderer {
                 a_texCoord: [0, 1]
             },
             {
-                a_position: [position.x+w, position.y],
+                a_position: [position.x+_w, position.y],
                 a_color: obj_option.color,
                 a_texCoord: [1, 1]
             },
             {
-                a_position: [position.x+w, position.y+h],
+                a_position: [position.x+_w, position.y+_h],
                 a_color: obj_option.color,
                 a_texCoord: [1, 0]
             },
             {
-                a_position: [position.x, position.y+h],
+                a_position: [position.x, position.y+_h],
                 a_color: obj_option.color,
                 a_texCoord: [0, 0]
             }
@@ -114,13 +119,16 @@ class Renderer {
         this.m_verticesContainer.clear();
     }
 
-    $renderShape(vertices) {
-        if(!this.m_verticesContainer.appendShape(vertices)) { // flush if full
+    /* @param { vertices[] } */
+    /* vertices [{ *attribute*: *data* }] */
+    $renderShape(_vertices) {
+        if(!this.m_verticesContainer.appendShape(_vertices)) { // flush if full
             this.makeDrawCall();
-            this.m_verticesContainer.appendShape(vertices);
+            this.m_verticesContainer.appendShape(_vertices);
         }
     }
 
+    /* initialization functions */
     $createShaders() {
         this.m_shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
             [
@@ -154,6 +162,7 @@ class Renderer {
         };
     }
 
+    /* @param { JSONObject, JSONObject } */
     $getFinalDrawingOption(_defaultOption, _overrideOption) {
         const new_option = _defaultOption;
         if(_overrideOption == undefined)
@@ -182,44 +191,41 @@ class Renderer {
         return new_option;
     }
 
-    $setupCamera(x, y, w, h) {
-        this.m_defaultCamera.setPosition(x, y);
-        this.m_defaultCamera.resize(w, h);
+    /* @param { number, number, number, number } */
+    $setupCamera(_x, _y, _w, _h) {
+        this.m_defaultCamera.setPosition(_x, _y);
+        this.m_defaultCamera.resize(_w, _h);
         this.m_defaultCamera.createMatrix();
         this.m_shader.setUniformData("u_projection", this.m_defaultCamera.getMatrix().getRawMatrix());
     }
 }
 
-/*
-canvas: name of the canvas you would like to draw on
-width: width of the canvas
-height: height of the canvas
-*/
-/* @param {JSONObject} */
-function processRendererSettings(settings) {
-    if(typeof(settings) != "object") {
+/* @param { settings{} } */
+/* settings { canvas: string, width: number, height: number } */
+function processRendererSettings(_settings) {
+    if(typeof(_settings) != "object") {
         return { error: true, message: "[ERROR] Renderer settings must be a JSON Object!" };
     }
 
     let processed_settings = {};
 
     //canvas
-    if(typeof(settings.canvas) == "string") {
-        processed_settings.canvas = document.getElementById(settings.canvas);
+    if(typeof(_settings.canvas) == "string") {
+        processed_settings.canvas = document.getElementById(_settings.canvas);
     } else {
         return { error: true, message: "[ERROR] Renderer settings is missing canvas id!" };
     }
 
     //width
-    if(typeof(settings.width) == "number") {
-        processed_settings.width = settings.width;
+    if(typeof(_settings.width) == "number") {
+        processed_settings.width = _settings.width;
     } else {
         processed_settings.width = processed_settings.canvas.width || 100;
     }
 
     //height
-    if(typeof(settings.height) == "number") {
-        processed_settings.height = settings.height;
+    if(typeof(_settings.height) == "number") {
+        processed_settings.height = _settings.height;
     } else {
         processed_settings.height = processed_settings.canvas.height || 100;
     }

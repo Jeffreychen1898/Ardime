@@ -1,17 +1,17 @@
 import * as Constants from "../utils/constants.js";
-import * as Methods from "../utils/methods.js";
 
-/* not finished */
 let counter = 1;
 
 class Texture {
-    constructor(source, properties, callback) {
+    /* @param { string|Uint8Array, properties{}, function } */
+    /* properties { smooth: boolean } */
+    constructor(_source, _properties, _callback) {
 
         this.m_texture = null;
-        this.properties = processProperties(properties);
+        this.properties = processProperties(_properties);
         this.id = counter ++;
 
-        if(typeof source == "string") {
+        if(typeof _source == "string") {
 
             const image = new Image();
             image.onload = () => {
@@ -21,40 +21,43 @@ class Texture {
                 const canvas = createCanvasImage(image);
                 this.$createWebGLTexture(canvas);
                 
-                if(typeof callback == "function") callback();
+                if(typeof _callback == "function") _callback();
             }
-            image.src = source;
+            image.src = _source;
             image.setAttribute("crossOrigin", "");
 
-        } else if(source instanceof Uint8Array) {
-            this.properties.width = properties.width;
-            this.properties.height = properties.height;
+        } else if(_source instanceof Uint8Array) {
+            this.properties.width = _properties.width;
+            this.properties.height = _properties.height;
             
             const channels = 4;
-            const pixel_count = source.length / channels;
+            const pixel_count = _source.length / channels;
             if(typeof this.properties.width != "number" || typeof this.properties.height != "number")
-                throw new Methods.InvalidParameter("[ERROR] Texture missing a width and height property!");
+                throw new Error("[ERROR] Texture missing a width and height property!");
             if(this.properties.width * this.properties.height != pixel_count)
                 throw new RangeError("[ERROR] Cannot create texture due to an invalid number of pixels!");
 
-            this.$createWebGLTexture(source);
+            this.$createWebGLTexture(_source);
 
         }
     }
 
-    bind(textureSlot) {
+    /* @param { number } */
+    bind(_textureSlot) {
         const gl = Constants.RenderingContext.WebGL;
 
+        gl.activeTexture(gl.TEXTURE0 + _textureSlot);
         gl.bindTexture(gl.TEXTURE_2D, this.m_texture);
     }
 
-    $createWebGLTexture(data) {
+    /* @param { Uint8Array|HTMLCanvasElement } */
+    $createWebGLTexture(_data) {
         const gl = Constants.RenderingContext.WebGL;
 
         this.m_texture = gl.createTexture();
         this.bind(0);
 
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.properties.width, this.properties.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.properties.width, this.properties.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, _data);
 
         const magnification_type = this.properties.smooth ? gl.LINEAR : gl.NEAREST;
 
@@ -65,37 +68,35 @@ class Texture {
     }
 }
 
-function createCanvasImage(image) {
+/* @param { Image } */
+function createCanvasImage(_image) {
     const canvas = document.createElement("canvas");
 
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.width = _image.width;
+    canvas.height = _image.height;
 
     const ctx = canvas.getContext("2d");
     ctx.scale(1, -1);
-    ctx.drawImage(image, 0, -canvas.height);
+    ctx.drawImage(_image, 0, -canvas.height);
 
     return canvas;
 }
 
-function processProperties(properties) {
-    if(!properties)
+/* @param { properties{} } */
+/* properties { smooth: boolean } */
+function processProperties(_properties) {
+    if(!_properties)
         return null;
     
     const new_properties = {};
 
     /* image smoothing */
-    if(typeof properties.smooth == "boolean")
-        new_properties.smooth = properties.smooth;
+    if(typeof _properties.smooth == "boolean")
+        new_properties.smooth = _properties.smooth;
     else
         new_properties.smooth = true;
     
     return new_properties;
 }
-
-/*
-const someImage = new Texture(source); // string: url array: pixels
-//
-*/
 
 export default Texture;

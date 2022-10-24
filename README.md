@@ -32,9 +32,9 @@ npx webpack build
 
 * polish and implement rendering options
 * implement draw shapes method
+* Use math.js for linear algebra
 * camera manipulation (when uniform object change, make draw call)
 * shader abstraction (when shader is changed, make draw call)
-* Use third party math library for linear algebra
 * better error handling
 * text rendering
 
