@@ -91,10 +91,10 @@ class Renderer {
 
         const new_shape = this.newShape();
 
-        this.createVertex(new_shape, { position: [position.x, position.y], color: obj_option.color, texCoord: [0, 1]});
-        this.createVertex(new_shape, { position: [position.x+_w, position.y], color: obj_option.color, texCoord: [1, 1]});
+        this.createVertex(new_shape, { position: [position.x   , position.y   ], color: obj_option.color, texCoord: [0, 1]});
+        this.createVertex(new_shape, { position: [position.x+_w, position.y   ], color: obj_option.color, texCoord: [1, 1]});
         this.createVertex(new_shape, { position: [position.x+_w, position.y+_h], color: obj_option.color, texCoord: [1, 0]});
-        this.createVertex(new_shape, { position: [position.x, position.y+_h], color: obj_option.color, texCoord: [0, 0]});
+        this.createVertex(new_shape, { position: [position.x   , position.y+_h], color: obj_option.color, texCoord: [0, 0]});
 
         this.drawShape(new_shape);
     }
