@@ -30,7 +30,7 @@ npx webpack build
 
 ## To Do
 
-* polish and implement rendering options (align)
+* polish and implement rendering options
 * implement draw shapes method
 * camera manipulation (when uniform object change, make draw call)
 * shader abstraction (when shader is changed, make draw call)

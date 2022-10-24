@@ -53,34 +53,55 @@ class Renderer {
     drawImage(image, x, y, w, h, options) {
         const obj_option = this.$getFinalDrawingOption(this.m_defaultDrawingOptions, options);
 
+        // swap texture
         if(this.m_textureTracker[0] != image.id) {
             this.makeDrawCall();
             image.bind(0);
             this.m_textureTracker[0] = image.id;
         }
 
+        // calculate position based on alignment
+        const get_align = obj_option.align.split(" ");
+        let position = { x: x, y: y };
+        switch(get_align[0]) {
+            case "center":
+                position.y -= h / 2.0;
+                break;
+            case "bottom":
+                position.y -= h;
+                break;
+        }
+        switch(get_align[1]) {
+            case "center":
+                position.x -= w / 2.0;
+                break;
+            case "right":
+                position.x += w;
+                break;
+        }
+
         const vertices = [
             {
-                a_position: [x, y],
+                a_position: [position.x, position.y],
                 a_color: obj_option.color,
                 a_texCoord: [0, 1]
             },
             {
-                a_position: [x+w, y],
+                a_position: [position.x+w, position.y],
                 a_color: obj_option.color,
                 a_texCoord: [1, 1]
             },
             {
-                a_position: [x+w, y+h],
+                a_position: [position.x+w, position.y+h],
                 a_color: obj_option.color,
                 a_texCoord: [1, 0]
             },
             {
-                a_position: [x, y+h],
+                a_position: [position.x, position.y+h],
                 a_color: obj_option.color,
                 a_texCoord: [0, 0]
             }
-        ]
+        ];
 
         this.$renderShape(vertices);
     }
@@ -128,7 +149,7 @@ class Renderer {
 
     $createDefaultDrawingOptions() {
         this.m_defaultDrawingOptions = {
-            align: { vertical: "top", horizontal: "left" },
+            align: "top left",
             color: [ 255, 255, 255, 255 ]
         };
     }
@@ -140,7 +161,7 @@ class Renderer {
 
         for(const each_option in new_option) {
             // continue if no override is defined
-            if(_overrideOption[each_option] == undefined)
+            if(typeof(_overrideOption[each_option]) != typeof(_defaultOption[each_option]))
                 continue;
             
             // override
