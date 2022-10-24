@@ -30,7 +30,6 @@ npx webpack build
 
 ## To Do
 
-* polish and implement rendering options
 * implement draw shapes method
 * Use math.js for linear algebra
 * camera manipulation (when uniform object change, make draw call)
