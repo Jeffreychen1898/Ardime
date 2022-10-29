@@ -3,6 +3,7 @@ import * as Methods from "../utils/methods.js";
 
 import * as WebGL from "./graphicsAPI/webgl/webgl.js";
 import shaders from "./graphicsAPI/webgl/shadercode.js";
+import UniformContainer from "./uniformContainers.js";
 import { VerticesContainer } from "./verticesContainer.js";
 import Camera2d from "./camera2d.js";
 import Texture from "./image.js";
@@ -22,8 +23,8 @@ class Renderer {
             console.error("webgl not supported!");
 
         // setup the defaults
-        this.$createShaders();
         this.$setupCamera(0, 0, this.settings.canvas.width, this.settings.canvas.height);
+        this.$createShaders();
         this.$createDefaultImage();
 
         // create the vertices container
@@ -133,9 +134,18 @@ class Renderer {
         });
     }
 
+    getCamera() {
+        return this.m_defaultCamera;
+    }
+
     /* @param { vertices[] } */
     /* vertices [{ *attribute*: *data* }] */
     drawShape(_shape) {
+        if(!this.m_shader.uniformIsUpdated()) {
+            this.makeDrawCall();
+            this.m_shader.updateUniforms();
+        }
+
         if(!this.m_verticesContainer.appendShape(_shape)) { // flush if full
             this.makeDrawCall();
             this.m_verticesContainer.appendShape(_shape);
@@ -152,6 +162,8 @@ class Renderer {
 
     /* initialization functions */
     $createShaders() {
+        const texture_uniform = new UniformContainer(Constants.UniformTypes.Integer, 0);
+
         this.m_shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
             [
                 {name: "a_position", size: 2},
@@ -159,12 +171,10 @@ class Renderer {
                 {name: "a_texCoord", size: 2}
             ],
             [
-                {name: "u_projection", type: Constants.UniformTypes.Matrix4},
-                {name: "u_texture", type: Constants.UniformTypes.Integer}
+                {name: "u_projection", value: this.m_defaultCamera.getUniformContainer()},
+                {name: "u_texture", value: texture_uniform}
             ]
         );
-
-        this.m_shader.setUniformData("u_texture", 0);
     }
 
     $createDefaultImage() {
@@ -189,7 +199,6 @@ class Renderer {
         this.m_defaultCamera.setPosition(_x, _y);
         this.m_defaultCamera.resize(_w, _h);
         this.m_defaultCamera.createMatrix();
-        this.m_shader.setUniformData("u_projection", this.m_defaultCamera.getMatrix()._data);
     }
 }
 

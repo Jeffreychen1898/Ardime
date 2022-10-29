@@ -31,9 +31,8 @@ npx webpack build
 
 ## To Do
 
-* Use math.js for linear algebra
-* camera manipulation (when uniform object change, make draw call)
 * shader abstraction (when shader is changed, make draw call)
+* camera rotation
 * better error handling
 * text rendering
 
@@ -45,6 +44,7 @@ npx webpack build
 
 
 * canvas resizes
+* polish library
 
 
 

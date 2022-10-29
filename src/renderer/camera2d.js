@@ -1,5 +1,6 @@
 import * as Constants from "./../utils/constants.js";
 import * as Matrices from "./../utils/matrices.js";
+import UniformContainer from "./uniformContainers.js";
 
 class Camera2d {
     /* @param { number, number } */
@@ -34,8 +35,15 @@ class Camera2d {
             this.m_camera.height = _params[3];
             this.m_camera.far = _params[4];
         }
+
+        this.m_uniformContainer = new UniformContainer(Constants.UniformTypes.Matrix4, null);
+
         this.m_cameraMatrix = null;
         this.createMatrix();
+    }
+
+    getUniformContainer() {
+        return this.m_uniformContainer;
     }
 
     createMatrix() {
@@ -46,6 +54,7 @@ class Camera2d {
         
         const create_projection_matrix = Matrices.projection2d(x - w / 2, x + w / 2, y - h / 2, y + h / 2, -1, 1);
         this.m_cameraMatrix = Constants.libraries.math.matrix(create_projection_matrix);
+        this.m_uniformContainer.set(create_projection_matrix);
     }
 
     /* @param { number, number } */

@@ -20,6 +20,9 @@ function gameloop(renderer, img) {
 	//console.log(1 / performance.getElapsedTime("seconds"));
 	performance.start();
 
+	const camera = renderer.getCamera();
+	//camera.resize(100, 100);
+	camera.createMatrix();
 	renderer.draw.rect(-400, -300, 800, 600, { color: [255, 0, 0, 255]});
 	renderer.draw.image(img, 0, 0, 100, 100, { color: [255, 255, 0, 255]});
 	//renderer.draw.rect(-400, -300, 400, 300);

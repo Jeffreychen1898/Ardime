@@ -1,16 +1,21 @@
 import * as WebGL from "./../../../utils/constants.js";
 import * as Constants from "./../../../utils/constants.js";
 
+let shaderIdCounter = 0;
+
 class Shader {
     /* @param { string, string, attributes[], uniforms[] } */
     /* attributes [{ name: string, size: number }] */
     /* uniforms [{ name: string, type: UniformTypes }] */
     constructor(_vertexCode, _fragmentCode, _attributes, _uniforms) {
+        this.id = shaderIdCounter;
+        ++ shaderIdCounter;
 
         this.m_indexBuffer = null;
         this.m_vertexArray = null;
         this.m_attributeDetails = new Map();
-        this.m_uniformLocations = new Map();
+        
+        this.m_uniformContainers = [];
 
         this.m_program = createProgram(_vertexCode, _fragmentCode);
         
@@ -65,40 +70,21 @@ class Shader {
             this.setAttributeData(attribute, _attributes);
     }
 
-    /* @param { string, Array|number } */
-    setUniformData(_name, _data) {
-        const gl = Constants.RenderingContext.WebGL;
-
-        if(this.m_uniformLocations.has(_name)) {
-            this.bind();
-
-            const uniform = this.m_uniformLocations.get(_name);
-            const uniform_types = WebGL.UniformTypes;
-
-            switch(uniform.type) {
-                case uniform_types.Integer:
-                    gl.uniform1i(uniform.location, _data);
-                    break;
-                case uniform_types.Float:
-                    gl.uniform1f(uniform.location, _data);
-                    break;
-                case uniform_types.Vector2:
-                    gl.uniform2f(uniform.location, ..._data);
-                    break;
-                case uniform_types.Vector3:
-                    gl.uniform3f(uniform.location, ..._data);
-                    break;
-                case uniform_types.Vector4:
-                    gl.uniform4f(uniform.location, ..._data);
-                    break;
-                case uniform_types.Matrix4:
-                    gl.uniformMatrix4fv(uniform.location, gl.FALSE, _data);
-                    break;
-                case uniform_types.IntegerArray:
-                    gl.uniform1iv(uniform.location, _data);
-                    break;
+    updateUniforms() {
+        for(const uniform of this.m_uniformContainers) {
+            if(!uniform.uniform.isUpdated(this.id)) {
+                this.$setUniformData(uniform);
             }
         }
+    }
+
+    uniformIsUpdated() {
+        for(const uniform of this.m_uniformContainers) {
+            if(!uniform.uniform.isUpdated(this.id))
+                return false;
+        }
+
+        return true;
     }
 
     /* @param { Array } */
@@ -112,6 +98,37 @@ class Shader {
     }
 
     /* @private */
+    /* @param { UniformContainer } */
+    $setUniformData(_uniformContainer) {
+        const gl = Constants.RenderingContext.WebGL;
+
+        const data = _uniformContainer.uniform.getData();
+        const location = _uniformContainer.location;
+        switch(_uniformContainer.uniform.getType()) {
+            case Constants.UniformTypes.Integer:
+                gl.uniform1i(location, data);
+                break;
+            case Constants.UniformTypes.Float:
+                gl.uniform1f(location, data);
+                break;
+            case Constants.UniformTypes.Vector2:
+                gl.uniform2f(location, ...data);
+                break;
+            case Constants.UniformTypes.Vector3:
+                gl.uniform3f(location, ...data);
+                break;
+            case Constants.UniformTypes.Vector4:
+                gl.uniform4f(location, ...data);
+                break;
+            case Constants.UniformTypes.Matrix4:
+                gl.uniformMatrix4fv(location, gl.FALSE, data);
+                break;
+            case Constants.UniformTypes.IntegerArray:
+                gl.uniform1iv(location, data);
+                break;
+        }
+    }
+
     $setupIndexBuffer() {
         const gl = Constants.RenderingContext.WebGL;
 
@@ -157,7 +174,7 @@ class Shader {
 
         for(const uniform of _uniforms) {
             const location = gl.getUniformLocation(this.m_program, uniform.name)
-            this.m_uniformLocations.set(uniform.name, { location: location, type: uniform.type });
+            this.m_uniformContainers.push({ location: location, uniform: uniform.value });
         }
     }
 }
