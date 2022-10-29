@@ -1,5 +1,3 @@
-import Mat4 from "./mat4.js";
-
 /* @param { number } */
 function rotateX(_ang) {
 	const rotate_matrix = [
@@ -9,7 +7,7 @@ function rotateX(_ang) {
 		0, 0, 0, 1
 	];
 
-	return new Mat4(rotate_matrix);
+	return rotate_matrix;
 }
 
 /* @param { number } */
@@ -21,7 +19,7 @@ function rotateY(_ang) {
 		0, 0, 0, 1
 	];
 
-	return new Mat4(rotate_matrix);
+	return rotate_matrix;
 }
 
 /* @param { number } */
@@ -38,7 +36,7 @@ function rotateZ(_ang) {
 		rotate_matrix[i] /= 100000;
 	}
 
-	return new Mat4(rotate_matrix);
+	return rotate_matrix;
 }
 
 /* @param { number, number, number, number, number, number } */
@@ -50,7 +48,7 @@ function projection2d(_left, _right, _top, _bottom, _near, _far) {
 		0, 0, 0, 1
 	];
 
-	return new Mat4(projection);
+	return projection;
 }
 
 /* @param { number, number, number, number, number, number } */
@@ -62,17 +60,13 @@ function projection3d(_left, _right, _top, _bottom, _near, _far) {
 		0, 0, -1, 0
 	];
 
-	return new Mat4(projection);
+	return projection;
 }
 
-const getMatrix = {
+export {
 	rotateX,
 	rotateY,
 	rotateZ,
 	projection2d,
 	projection3d
-};
-
-export {
-	getMatrix
 };

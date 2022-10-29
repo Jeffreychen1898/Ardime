@@ -189,7 +189,7 @@ class Renderer {
         this.m_defaultCamera.setPosition(_x, _y);
         this.m_defaultCamera.resize(_w, _h);
         this.m_defaultCamera.createMatrix();
-        this.m_shader.setUniformData("u_projection", this.m_defaultCamera.getMatrix().getRawMatrix());
+        this.m_shader.setUniformData("u_projection", this.m_defaultCamera.getMatrix()._data);
     }
 }
 

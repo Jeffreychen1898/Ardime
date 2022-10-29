@@ -1,4 +1,5 @@
-import * as math from "./../math/math.js";
+import * as Constants from "./../utils/constants.js";
+import * as Matrices from "./../utils/matrices.js";
 
 class Camera2d {
     /* @param { number, number } */
@@ -43,7 +44,8 @@ class Camera2d {
         const w = this.m_camera.width;
         const h = this.m_camera.height;
         
-        this.m_cameraMatrix = math.getMatrix.projection2d(x - w / 2, x + w / 2, y - h / 2, y + h / 2, -1, 1);
+        const create_projection_matrix = Matrices.projection2d(x - w / 2, x + w / 2, y - h / 2, y + h / 2, -1, 1);
+        this.m_cameraMatrix = Constants.libraries.math.matrix(create_projection_matrix);
     }
 
     /* @param { number, number } */

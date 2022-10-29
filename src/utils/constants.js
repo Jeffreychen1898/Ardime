@@ -24,10 +24,16 @@ const Time = {
 const MAX_ATTRIBUTES = 50_000;
 const MAX_INDICES = 10_000;
 
+/* variables to access certain libraries */
+const libraries = {
+    math: null
+};
+
 export {
     UniformTypes,
     RenderingContext,
     MAX_ATTRIBUTES,
     MAX_INDICES,
-    Time
+    Time,
+    libraries
 };

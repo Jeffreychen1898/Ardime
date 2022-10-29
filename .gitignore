@@ -1,5 +1,5 @@
 test/node_modules/**
 test/package-lock.json
 build/
-**/shadercode.js
+test/views/math.js
 !.gitignore

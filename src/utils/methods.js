@@ -28,6 +28,12 @@ function processOptions(_defaultOption, _overrideOption) {
     return new_option;
 }
 
+function requireLib(_libraryName, _library) {
+    if(!_library)
+        return console.error("missing " + _libraryName + "!");
+}
+
 export {
-    processOptions
+    processOptions,
+    requireLib
 }

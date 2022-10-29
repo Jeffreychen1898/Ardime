@@ -7,6 +7,7 @@ A simple rendering library
 **Run The Code**
 
 * Install the npm modules with the following commands: (If not already done so)
+* Download all third party libraries (found below) in the folder ./test/views/
 
   * ```
     cd test
@@ -50,3 +51,6 @@ npx webpack build
 ## Better Fixes
 
 * Put a lot of the renderer code outside of the class
+
+## Third Party Libraries
+* math.Js (https://github.com/josdejong/mathjs)

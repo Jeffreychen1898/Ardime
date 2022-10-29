@@ -6,6 +6,7 @@ window.onload = () => {
 		width: 800,
 		height: 600
 	};
+	Ardime.useLibrary("mathjs", math);
 	const renderer = new Ardime.Renderer(settings);
 	const url = "/testImage.png";
 	const testImage = new Ardime.Image(url, {}, () => {
