@@ -27,7 +27,8 @@ function gameloop(renderer, img) {
 	renderer.draw.image(img, 0, 0, 100, 100, { color: [255, 255, 0, 255]});
 	//renderer.draw.rect(-400, -300, 400, 300);
 	//renderer.draw.rect(0, 0, pos += 5, 100);
-	renderer.makeDrawCall();
+	//renderer.makeDrawCall();
+	renderer.flush();
 
 	requestAnimationFrame(() => {
 		gameloop(renderer, img);

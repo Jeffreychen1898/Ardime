@@ -33,9 +33,9 @@ npx webpack build
 
 * shader abstraction (when shader is changed, make draw call)
 * camera rotation
-* better error handling
 * text rendering
 
+* better error handling
 * frame buffers
 * uniform buffers
 * create geometry class for handling geometry

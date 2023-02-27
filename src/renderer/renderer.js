@@ -102,7 +102,7 @@ class Renderer {
 
     bindTexture(_image, _slot) {
         if(this.m_textureTracker[_slot] != _image.id) {
-            this.makeDrawCall();
+            this.$makeDrawCall();
             _image.bind(_slot);
             this.m_textureTracker[_slot] = _image.id;
         }
@@ -142,17 +142,21 @@ class Renderer {
     /* vertices [{ *attribute*: *data* }] */
     drawShape(_shape) {
         if(!this.m_shader.uniformIsUpdated()) {
-            this.makeDrawCall();
+            this.$makeDrawCall();
             this.m_shader.updateUniforms();
         }
 
         if(!this.m_verticesContainer.appendShape(_shape)) { // flush if full
-            this.makeDrawCall();
+            this.$makeDrawCall();
             this.m_verticesContainer.appendShape(_shape);
         }
     }
 
-    makeDrawCall() {
+	flush() {
+		this.$makeDrawCall();
+	}
+
+    $makeDrawCall() {
         if(this.m_verticesContainer.empty())
             return;
 

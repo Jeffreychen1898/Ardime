@@ -1,4 +1,3 @@
-import * as WebGL from "./../../../utils/constants.js";
 import * as Constants from "./../../../utils/constants.js";
 
 let shaderIdCounter = 0;
