@@ -31,6 +31,7 @@ npx webpack build
 
 ## To Do
 
+* base projection (2.5d projection)
 * rotating shapes
 * text rendering
 
