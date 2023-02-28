@@ -38,6 +38,9 @@ class UniformContainer {
     isUpdated(_shaderId) {
         return this.m_shaders.get(_shaderId);
     }
+
+	serialize() {
+	}
 }
 
 export default UniformContainer;

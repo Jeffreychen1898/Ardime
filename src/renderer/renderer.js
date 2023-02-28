@@ -12,7 +12,8 @@ class Renderer {
     /* @param { settings{} } */
     /* settings { canvas: string, width: number, height: number } */
     constructor(_settings) {
-        this.m_shader = null;
+		this.m_shader = null;
+        this.m_defaultShader = null;
         this.m_defaultCamera = new Camera2d();
         this.m_whiteImage = null;
 
@@ -29,7 +30,8 @@ class Renderer {
 
         // create the vertices container
         this.m_verticesContainer = new VerticesContainer(Constants.MAX_ATTRIBUTES, Constants.MAX_INDICES);
-        this.m_verticesContainer.setShader(this.m_shader);
+        this.m_verticesContainer.setShader(this.m_defaultShader);
+		this.m_shader = this.m_defaultShader;
 
         // setup useful variables
         this.webgl = Constants.RenderingContext.WebGL;
@@ -47,15 +49,27 @@ class Renderer {
             rect: (_x, _y, _w, _h, _options) => { this.drawImage(this.m_whiteImage, _x, _y, _w, _h, _options); },
             image: (_image, _x, _y, _w, _h, _options) => { this.drawImage(_image, _x, _y, _w, _h, _options); },
             shape: {
-                new: () => { this.newShape(); },
+                new: () => { return this.newShape(); },
                 vertex: (_shape, _attributes, _differentShader) => { this.createVertex(_shape, _attributes, _differentShader); },
-                draw: (_shape) => { this.drawShape(_shape); }
+                draw: (_shape, _shader) => { this.drawShape(_shape, _shader); }
             },
             bind: {
                 texture: (_texture, _slot) => { this.bindTexture(_texture, _slot); }
             }
         }
+
+		this.create = {
+			shader: (_vert, _frag, _attribs, _uniforms) => { return this.createShader(_vert, _frag, _attribs, _uniforms); },
+			uniformContainer: (_uniformType, _data) => { return new UniformContainer(_uniformType, _data); }
+		}
     }
+
+	createShader(_vert, _frag, _attribs, _uniforms) {
+		const new_shader = new WebGL.Shader.Shader(_vert, _frag, _attribs, _uniforms);
+		this.m_shader = new_shader;
+		this.m_verticesContainer.setShader(new_shader);
+		return new_shader;
+	}
 
     /* @param { options{} } */
     /* options { align: string, color: Array } */
@@ -140,10 +154,21 @@ class Renderer {
 
     /* @param { vertices[] } */
     /* vertices [{ *attribute*: *data* }] */
-    drawShape(_shape) {
-        if(!this.m_shader.uniformIsUpdated()) {
+    drawShape(_shape, _shader) {
+		/* set the default shader */
+		if(_shader == undefined)
+			_shader = this.m_defaultShader;
+
+		/* flush and swap shader */
+		if(_shader.id != this.m_shader.id) {
+			this.$makeDrawCall();
+			this.m_verticesContainer.setShader(_shader);
+			this.m_shader = _shader;
+		}
+
+        if(!_shader.uniformIsUpdated()) {
             this.$makeDrawCall();
-            this.m_shader.updateUniforms();
+            _shader.updateUniforms();
         }
 
         if(!this.m_verticesContainer.appendShape(_shape)) { // flush if full
@@ -168,7 +193,7 @@ class Renderer {
     $createShaders() {
         const texture_uniform = new UniformContainer(Constants.UniformTypes.Integer, 0);
 
-        this.m_shader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
+        this.m_defaultShader = new WebGL.Shader.Shader(shaders.rect.vertex, shaders.rect.fragment,
             [
                 {name: "a_position", size: 2},
                 {name: "a_color", size: 4},

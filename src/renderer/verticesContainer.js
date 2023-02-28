@@ -12,6 +12,8 @@ class VerticesContainer {
 
     /* @param {Shader} */
     setShader(_shader) {
+		_shader.bind();
+
         const attributes = _shader.getAttributesList();
         this.m_attributesArr.clear();
         this.m_attributesArr.resetAttribDetails();

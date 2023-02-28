@@ -17,12 +17,11 @@ class Shader {
         this.m_uniformContainers = [];
 
         this.m_program = createProgram(_vertexCode, _fragmentCode);
+		this.bind();
         
         this.$setupAttributes(_attributes);
         if(_uniforms) this.$setupUniforms(_uniforms);
         this.$setupIndexBuffer();
-
-        this.bind();
     }
 
     getAttributesList() {
@@ -46,6 +45,7 @@ class Shader {
         const gl = Constants.RenderingContext.WebGL;
 
         gl.useProgram(this.m_program);
+        gl.bindVertexArray(this.m_vertexArray);
     }
 
     /* @param { String, Float32Array } */
@@ -111,16 +111,16 @@ class Shader {
                 gl.uniform1f(location, data);
                 break;
             case Constants.UniformTypes.Vector2:
-                gl.uniform2f(location, ...data);
+                gl.uniform2f(location, new Float32Array(data));
                 break;
             case Constants.UniformTypes.Vector3:
-                gl.uniform3f(location, ...data);
+                gl.uniform3f(location, new Float32Array(data));
                 break;
             case Constants.UniformTypes.Vector4:
-                gl.uniform4f(location, ...data);
+                gl.uniform4f(location, new Float32Array(data));
                 break;
             case Constants.UniformTypes.Matrix4:
-                gl.uniformMatrix4fv(location, gl.FALSE, data);
+                gl.uniformMatrix4fv(location, gl.FALSE, new Float32Array(data.flat()));
                 break;
             case Constants.UniformTypes.IntegerArray:
                 gl.uniform1iv(location, data);

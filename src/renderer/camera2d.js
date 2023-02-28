@@ -12,6 +12,7 @@ class Camera2d {
             y: 0,
             width: 1,
             height: 1,
+			rotation: 0,
             near: 0,
             far: -1
         };
@@ -51,10 +52,17 @@ class Camera2d {
         const y = this.m_camera.y;
         const w = this.m_camera.width;
         const h = this.m_camera.height;
-        
-        const create_projection_matrix = Matrices.projection2d(x - w / 2, x + w / 2, y - h / 2, y + h / 2, -1, 1);
-        this.m_cameraMatrix = Constants.libraries.math.matrix(create_projection_matrix);
-        this.m_uniformContainer.set(create_projection_matrix);
+		const n = this.m_camera.near;
+		const f = this.m_camera.far;
+
+        const projection_matrix = Matrices.projection2d(-w / 2, w / 2, -h / 2, h / 2, n, f);
+		const z_rotation_matrix = Matrices.rotateZ(-this.m_camera.rotation);
+		const translation_matrix = Matrices.translate(-x, -y, 0);
+
+		this.m_cameraMatrix = Constants.libraries.math.multiply(translation_matrix, z_rotation_matrix);
+		this.m_cameraMatrix = Constants.libraries.math.multiply(this.m_cameraMatrix, projection_matrix);
+
+        this.m_uniformContainer.set(this.m_cameraMatrix);
     }
 
     /* @param { number, number } */
@@ -74,6 +82,56 @@ class Camera2d {
         this.m_camera.width = _w;
         this.m_camera.height = _h;
     }
+
+	setAngle(_angle) {
+		this.m_camera.rotation = _angle;
+	}
+
+	rotate(_angle) {
+		this.m_camera.rotation += _angle;
+	}
+
+	getPosition() {
+		return {
+			x: this.m_camera.x,
+			y: this.m_camera.y
+		};
+	}
+
+	getSize() {
+		return {
+			width: this.m_camera.width,
+			height: this.m_camera.height
+		};
+	}
+
+	getX() {
+		return this.m_camera.x;
+	}
+
+	getY() {
+		return this.m_camera.y;
+	}
+
+	getWidth() {
+		return this.m_camera.width;
+	}
+
+	getHeight() {
+		return this.m_camera.height;
+	}
+
+	getNear() {
+		return this.m_camera.near;
+	}
+
+	getFar() {
+		return this.m_camera.far;
+	}
+
+	getAngle() {
+		return this.m_camera.rotation;
+	}
 
     getMatrix() {
         return this.m_cameraMatrix;

@@ -31,15 +31,16 @@ npx webpack build
 
 ## To Do
 
-* shader abstraction (when shader is changed, make draw call)
-* camera rotation
+* rotating shapes
 * text rendering
 
-* better error handling
+* draw diagram of the code architecture
+* clean up code
+* * use linked list for storing vertices (renderer.js, verticesContainer.js)
+* * better error handling
 * frame buffers
 * uniform buffers
 * create geometry class for handling geometry
-* use linked list for storing vertices (renderer.js, verticesContainer.js)
 
 
 
