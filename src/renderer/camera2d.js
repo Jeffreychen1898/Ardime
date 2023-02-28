@@ -66,7 +66,7 @@ class Camera2d {
     }
 
     /* @param { number, number } */
-    translate(_x, _y) {
+    move(_x, _y) {
         this.m_camera.x += _x;
         this.m_camera.y += _y;
     }
@@ -87,7 +87,7 @@ class Camera2d {
 		this.m_camera.rotation = _angle;
 	}
 
-	rotate(_angle) {
+	rotateAngle(_angle) {
 		this.m_camera.rotation += _angle;
 	}
 

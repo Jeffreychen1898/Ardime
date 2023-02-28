@@ -88,17 +88,17 @@ function cameraControl(_camera) {
 	const camera = _camera;
 
 	if(keyset.has(65)) // left
-		camera.translate(-5 * Math.cos(camera.getAngle()), -5 * Math.sin(camera.getAngle()));
+		camera.move(-5 * Math.cos(camera.getAngle()), -5 * Math.sin(camera.getAngle()));
 	if(keyset.has(68)) // right
-		camera.translate(5 * Math.cos(camera.getAngle()), 5 * Math.sin(camera.getAngle()));
+		camera.move(5 * Math.cos(camera.getAngle()), 5 * Math.sin(camera.getAngle()));
 	if(keyset.has(83)) // down
-		camera.translate(-5 * Math.sin(camera.getAngle()), 5 * Math.cos(camera.getAngle()));
+		camera.move(-5 * Math.sin(camera.getAngle()), 5 * Math.cos(camera.getAngle()));
 	if(keyset.has(87)) // up
-		camera.translate(5 * Math.sin(camera.getAngle()), -5 * Math.cos(camera.getAngle()));
+		camera.move(5 * Math.sin(camera.getAngle()), -5 * Math.cos(camera.getAngle()));
 	if(keyset.has(81)) // counterclock
-		camera.rotate(-0.1);
+		camera.rotateAngle(-0.1);
 	if(keyset.has(69)) // clockwise
-		camera.rotate(0.1);
+		camera.rotateAngle(0.1);
 
 	//camera.resize(100, 100);
 	camera.createMatrix();
