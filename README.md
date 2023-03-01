@@ -32,12 +32,19 @@ npx webpack build
 ## To Do
 
 * write documentation
+	* Setup
+	* Camera Control
+	* Drawing Shapes
+	* Performance Measurement
+	* Transformations
+	* Custom GLSL Shaders
+	* Extending the Renderer Class
 
 * draw diagram of the code architecture
 * clean up code
 * enable cullface
-* * use linked list for storing vertices (renderer.js, verticesContainer.js)
-* * better error handling
+	* use linked list for storing vertices (renderer.js, verticesContainer.js)
+	* better error handling
 * frame buffers
 * uniform buffers
 * create geometry class for handling geometry
