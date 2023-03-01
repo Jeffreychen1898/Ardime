@@ -16,6 +16,7 @@ class Camera2d {
             near: 0,
             far: -1
         };
+		this.m_baseProjection = null;
         if(_params.length == 2) {
 
             this.m_camera.width = _params[0];
@@ -43,6 +44,10 @@ class Camera2d {
         this.createMatrix();
     }
 
+	setBaseProjection(_matrix) {
+		this.m_baseProjection = _matrix;
+	}
+
     getUniformContainer() {
         return this.m_uniformContainer;
     }
@@ -55,7 +60,10 @@ class Camera2d {
 		const n = this.m_camera.near;
 		const f = this.m_camera.far;
 
-        const projection_matrix = Matrices.projection2d(-w / 2, w / 2, -h / 2, h / 2, n, f);
+        let projection_matrix = Matrices.projection2d(-w / 2, w / 2, -h / 2, h / 2, n, f);
+		if(this.m_baseProjection != null)
+			//projection_matrix = Constants.libraries.math.multiply(projection_matrix, this.m_baseProjection);
+			projection_matrix = Constants.libraries.math.multiply(this.m_baseProjection, projection_matrix);
 		const z_rotation_matrix = Matrices.rotateZ(-this.m_camera.rotation);
 		const translation_matrix = Matrices.translate(-x, -y, 0);
 
@@ -76,6 +84,12 @@ class Camera2d {
         this.m_camera.x = _x;
         this.m_camera.y = _y;
     }
+
+	/* @param { number, number } */
+	setNearFar(_near, _far) {
+		this.m_camera.near = _near;
+		this.m_camera.far = _far;
+	}
 
     /* @param { number, number } */
     resize(_w, _h) {

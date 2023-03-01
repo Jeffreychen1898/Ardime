@@ -37,6 +37,7 @@ npx webpack build
 
 * draw diagram of the code architecture
 * clean up code
+* enable cullface
 * * use linked list for storing vertices (renderer.js, verticesContainer.js)
 * * better error handling
 * frame buffers

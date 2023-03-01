@@ -64,6 +64,16 @@ class Renderer {
 		}
     }
 
+	clear(_buffers) {
+		let gl_clear_bits = this.m_webgl.getColorBufferBit();
+		if(_buffers.depth == true)
+			gl_clear_bits = gl_clear_bits | this.m_webgl.getDepthBufferBit();
+		if(_buffers.stencil == true)
+			gl_clear_bits = gl_clear_bits | this.m_webgl.getStencilBufferBit();
+
+		this.m_webgl.clear(gl_clear_bits);
+	}
+
 	createShader(_vert, _frag, _attribs, _uniforms) {
 		const new_shader = new WebGL.Shader.Shader(_vert, _frag, _attribs, _uniforms);
 		this.m_shader = new_shader;

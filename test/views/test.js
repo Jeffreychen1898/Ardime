@@ -3,20 +3,21 @@ import * as Ardime from "./ardime/index.js";
 const vertex_shader = `
 precision mediump float;
 
-attribute vec2 a_position;
+attribute vec3 a_position;
 
 uniform mat4 u_projection;
 
 void main()
 {
-	gl_Position = u_projection * vec4(a_position, 0.0, 1.0);
+	vec4 calculated_position = u_projection * vec4(a_position, 1.0);
+	gl_Position = calculated_position;
 }
 `;
 const fragment_shader = `
 precision mediump float;
 
 void main() {
-	gl_FragColor = vec4(1.0);
+	gl_FragColor = vec4(1.0, 1.0, 0.0, 0.4);
 }
 `;
 
@@ -38,10 +39,18 @@ window.onload = () => {
 
 	test_shader = renderer.create.shader(vertex_shader, fragment_shader,
 	[
-		{name: "a_position", size: 2}
+		{name: "a_position", size: 3}
 	],
 	[
 		{name: "u_projection", value: renderer.getCamera().getUniformContainer()}
+	]);
+
+	renderer.getCamera().setNearFar(1000, -1000);
+	renderer.getCamera().setBaseProjection([
+		[1, 0, 0, 0],
+		[0, 1, 0, 0],
+		[0, -1, -1, 0],
+		[0, 0, 0, 1]
 	]);
 
 	const testImage = new Ardime.Image(url, {}, () => {
@@ -55,25 +64,27 @@ function gameloop(renderer, img) {
 	//console.log(1 / performance.getElapsedTime("seconds"));
 	performance.start();
 
+	renderer.clear({depth: true});
+
 	cameraControl(renderer.getCamera());
 	renderer.draw.rect(-400, -300, 800, 600, { color: [255, 0, 0, 255]});
 
 	const test_shape = renderer.draw.shape.new();
 	renderer.draw.shape.vertex(test_shape, {
-		a_position: [100, 100]
+		a_position: [100, 100, 300]
 	}, true);
 	renderer.draw.shape.vertex(test_shape, {
-		a_position: [200, 100]
+		a_position: [200, 100, 300]
 	}, true);
 	renderer.draw.shape.vertex(test_shape, {
-		a_position: [200, 200]
+		a_position: [200, 100, 0]
 	}, true);
 	renderer.draw.shape.vertex(test_shape, {
-		a_position: [100, 200]
+		a_position: [100, 100, 0]
 	}, true);
 	renderer.draw.shape.draw(test_shape, test_shader);
 
-	renderer.draw.image(img, 0, 0, 100, 100, { color: [255, 255, 0, 255]});
+	renderer.draw.image(img, 100, 100, 100, 100, { color: [255, 255, 0, 255]});
 	//renderer.draw.rect(-400, -300, 400, 300);
 	//renderer.draw.rect(0, 0, pos += 5, 100);
 	//renderer.makeDrawCall();
