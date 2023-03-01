@@ -3,4 +3,5 @@ test/package-lock.json
 build/
 test/views/math.js
 .DS_Store
+**/.DS_Store
 !.gitignore
