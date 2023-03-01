@@ -2,4 +2,5 @@ test/node_modules/**
 test/package-lock.json
 build/
 test/views/math.js
+.DS_Store
 !.gitignore
