@@ -31,7 +31,6 @@ npx webpack build
 
 ## To Do
 
-* text rendering
 * write documentation
 
 * draw diagram of the code architecture
@@ -42,6 +41,7 @@ npx webpack build
 * frame buffers
 * uniform buffers
 * create geometry class for handling geometry
+* text rendering
 * more flexible camera control
 
 
