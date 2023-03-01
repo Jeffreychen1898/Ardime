@@ -8,6 +8,8 @@ import { VerticesContainer } from "./verticesContainer.js";
 import Camera2d from "./camera2d.js";
 import Texture from "./image.js";
 
+import * as Transformations from "./../geometry/transformation.js";
+
 class Renderer {
     /* @param { settings{} } */
     /* settings { canvas: string, width: number, height: number } */
@@ -114,12 +116,29 @@ class Renderer {
                 break;
         }
 
+		let points = [
+			[position.x, position.y, 0],
+			[position.x + _w, position.y, 0],
+			[position.x + _w, position.y + _h, 0],
+			[position.x, position.y + _h, 0]
+		];
+
+		if(obj_option.angle != 0) {
+			let create_transformation = Transformations.newTransformation();
+			create_transformation = Transformations.translate(create_transformation, -_x, -_y, 0);
+			create_transformation = Transformations.rotateZ(create_transformation, obj_option.angle);
+			create_transformation = Transformations.translate(create_transformation, _x, _y, 0);
+
+			for(let i=0;i<points.length;++i)
+				points[i] = Transformations.applyTransformation(create_transformation, points[i]);
+		}
+
         const new_shape = this.newShape();
 
-        this.createVertex(new_shape, { position: [position.x   , position.y   ], color: obj_option.color, texCoord: [0, 1]});
-        this.createVertex(new_shape, { position: [position.x+_w, position.y   ], color: obj_option.color, texCoord: [1, 1]});
-        this.createVertex(new_shape, { position: [position.x+_w, position.y+_h], color: obj_option.color, texCoord: [1, 0]});
-        this.createVertex(new_shape, { position: [position.x   , position.y+_h], color: obj_option.color, texCoord: [0, 0]});
+        this.createVertex(new_shape, { position: [points[0][0], points[0][1]], color: obj_option.color, texCoord: [0, 1]});
+        this.createVertex(new_shape, { position: [points[1][0], points[1][1]], color: obj_option.color, texCoord: [1, 1]});
+        this.createVertex(new_shape, { position: [points[2][0], points[2][1]], color: obj_option.color, texCoord: [1, 0]});
+        this.createVertex(new_shape, { position: [points[3][0], points[3][1]], color: obj_option.color, texCoord: [0, 0]});
 
         this.drawShape(new_shape);
     }
@@ -229,7 +248,8 @@ class Renderer {
     $createDefaultDrawingOptions() {
         this.m_defaultDrawingOptions = {
             align: "top left",
-            color: [ 255, 255, 255, 255 ]
+            color: [ 255, 255, 255, 255 ],
+			angle: 0
         };
     }
 

@@ -1,6 +1,6 @@
 /* @param { JSONObject, JSONObject } */
 function processOptions(_defaultOption, _overrideOption) {
-    const new_option = _defaultOption;
+    const new_option = { ..._defaultOption };
     if(_overrideOption == undefined)
         return new_option;
 

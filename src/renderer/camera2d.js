@@ -62,7 +62,6 @@ class Camera2d {
 
         let projection_matrix = Matrices.projection2d(-w / 2, w / 2, -h / 2, h / 2, n, f);
 		if(this.m_baseProjection != null)
-			//projection_matrix = Constants.libraries.math.multiply(projection_matrix, this.m_baseProjection);
 			projection_matrix = Constants.libraries.math.multiply(this.m_baseProjection, projection_matrix);
 		const z_rotation_matrix = Matrices.rotateZ(-this.m_camera.rotation);
 		const translation_matrix = Matrices.translate(-x, -y, 0);

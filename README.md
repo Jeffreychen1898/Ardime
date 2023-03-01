@@ -31,9 +31,8 @@ npx webpack build
 
 ## To Do
 
-* base projection (2.5d projection)
-* rotating shapes
 * text rendering
+* write documentation
 
 * draw diagram of the code architecture
 * clean up code

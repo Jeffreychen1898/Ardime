@@ -58,8 +58,11 @@ window.onload = () => {
 	});
 }
 
+let incrementer = 0;
+
 let performance = new Ardime.Performance();
 function gameloop(renderer, img) {
+	++ incrementer;
 	performance.stop();
 	//console.log(1 / performance.getElapsedTime("seconds"));
 	performance.start();
@@ -84,7 +87,7 @@ function gameloop(renderer, img) {
 	}, true);
 	renderer.draw.shape.draw(test_shape, test_shader);
 
-	renderer.draw.image(img, 100, 100, 100, 100, { color: [255, 255, 0, 255]});
+	renderer.draw.image(img, 100, 100, 100, 100, { color: [255, 255, 0, 255], angle: incrementer * 0.01});
 	//renderer.draw.rect(-400, -300, 400, 300);
 	//renderer.draw.rect(0, 0, pos += 5, 100);
 	//renderer.makeDrawCall();
