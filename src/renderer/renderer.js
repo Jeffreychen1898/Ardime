@@ -68,10 +68,12 @@ class Renderer {
 
 	clear(_buffers) {
 		let gl_clear_bits = this.m_webgl.getColorBufferBit();
-		if(_buffers.depth == true)
-			gl_clear_bits = gl_clear_bits | this.m_webgl.getDepthBufferBit();
-		if(_buffers.stencil == true)
-			gl_clear_bits = gl_clear_bits | this.m_webgl.getStencilBufferBit();
+		if(typeof _buffers == "object") {
+			if(_buffers.depth == true)
+				gl_clear_bits = gl_clear_bits | this.m_webgl.getDepthBufferBit();
+			if(_buffers.stencil == true)
+				gl_clear_bits = gl_clear_bits | this.m_webgl.getStencilBufferBit();
+		}
 
 		this.m_webgl.clear(gl_clear_bits);
 	}
