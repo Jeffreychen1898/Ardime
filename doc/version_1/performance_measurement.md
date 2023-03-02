@@ -1,10 +1,17 @@
 # Performance Measurement
+This is a very small and simple class used to measure the time passed
+```javascript
+const performance = new Ardime.Performance(); // note: automatically starts the clock
 
-show how to get the change in time
-show how to get the time in
-	milliseconds
-	seconds
-	minutes
-	hours
+// run some code
 
-talk about the time constants
+performance.stop();
+console.log(performance.getElapsedTime(Ardime.Const.Time.Millisec));
+console.log(performance.getElapsedTime(Ardime.Const.Time.Seconds));
+console.log(performance.getElapsedTime(Ardime.Const.Time.Minutes));
+console.log(performance.getElapsedTime(Ardime.Const.Time.Hours));
+
+performance.start();
+// run some more code
+performance.stop();
+```

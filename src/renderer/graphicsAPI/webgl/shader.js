@@ -5,7 +5,7 @@ let shaderIdCounter = 0;
 class Shader {
     /* @param { string, string, attributes[], uniforms[] } */
     /* attributes [{ name: string, size: number }] */
-    /* uniforms [{ name: string, type: UniformTypes }] */
+    /* uniforms [{ name: string, value: UniformContainer }] */
     constructor(_vertexCode, _fragmentCode, _attributes, _uniforms) {
         this.id = shaderIdCounter;
         ++ shaderIdCounter;
@@ -167,12 +167,14 @@ class Shader {
         }
     }
 
-    /* @param { name: string, type: WebGLUniformTypes } */
+	/* @param {uniforms[]} */
+    /* uniforms [{ name: string, value: UniformContainer }] */
     $setupUniforms(_uniforms) {
         const gl = Constants.RenderingContext.WebGL;
 
         for(const uniform of _uniforms) {
             const location = gl.getUniformLocation(this.m_program, uniform.name)
+			uniform.value.connect(this);
             this.m_uniformContainers.push({ location: location, uniform: uniform.value });
         }
     }

@@ -29,11 +29,20 @@ const libraries = {
     math: null
 };
 
+/* ============ exports ============= */
+/* constants to export */
+const ExportConst = {
+	UniformTypes,
+	RenderingContext,
+	Time
+};
+
 export {
     UniformTypes,
     RenderingContext,
     MAX_ATTRIBUTES,
     MAX_INDICES,
     Time,
-    libraries
+    libraries,
+	ExportConst
 };
