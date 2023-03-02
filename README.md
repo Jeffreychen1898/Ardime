@@ -31,15 +31,6 @@ npx webpack build
 
 ## To Do
 
-* write documentation
-	* Setup
-	* Camera Control
-	* Drawing Shapes
-	* Performance Measurement
-	* Transformations
-	* Custom GLSL Shaders
-	* Extending the Renderer Class
-
 * draw diagram of the code architecture
 * clean up code
 * enable cullface
