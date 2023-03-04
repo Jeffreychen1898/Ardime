@@ -111,13 +111,13 @@ class Shader {
                 gl.uniform1f(location, data);
                 break;
             case Constants.UniformTypes.Vector2:
-                gl.uniform2f(location, new Float32Array(data));
+                gl.uniform2f(location, data[0], data[1]);
                 break;
             case Constants.UniformTypes.Vector3:
-                gl.uniform3f(location, new Float32Array(data));
+                gl.uniform3f(location, data[0], data[1], data[2]);
                 break;
             case Constants.UniformTypes.Vector4:
-                gl.uniform4f(location, new Float32Array(data));
+                gl.uniform4f(location, data[0], data[1], data[2], data[3]);
                 break;
             case Constants.UniformTypes.Matrix4:
                 gl.uniformMatrix4fv(location, gl.FALSE, new Float32Array(data.flat()));
